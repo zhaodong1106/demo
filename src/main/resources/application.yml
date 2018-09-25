@@ -1,0 +1,30 @@
+spring:
+  dubbo:
+    server: true
+  application:
+    name: demo
+  datasource:
+    url: jdbc:mysql://47.94.105.130:3306/spring-security?useSSL=false
+    username: root
+    password: ZHAODONGqwe123!@#
+    driver-class-name: com.mysql.jdbc.Driver
+  thymeleaf:
+    encoding: utf-8
+    mode: HTML5
+    cache: false
+    suffix: .html
+server:
+  port: 8085
+mybatis:
+  mapper-locations: classpath:mapper/*.xml
+logging:
+  level.com.example.demo.dao: debug
+fdfs:
+  connect-timeout: 600
+  so-timeout: 1500
+  tracker-list: 172.17.244.159:22122
+  thumb-image:             #缩略图生成参数
+      width: 150
+      height: 150
+fastDfs:
+  host: http://47.94.105.130:8888/

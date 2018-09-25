@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.example.demo.dao.GoodsDao">
+    <resultMap id="BaseResultMap" type="com.example.demo.entity.Goods">
+        <id column="goods_id" property="goodsId"  jdbcType="VARCHAR"/>
+        <result column="goods_name" property="goodsName" jdbcType="VARCHAR"/>
+        <result column="goods_price" property="goodsPrice"  jdbcType="DECIMAL"/>
+        <result column="goods_num" property="goodsNum"  jdbcType="INTEGER"/>
+    </resultMap>
+    <sql id="column">
+        goods_id,goods_name,goods_price,goods_num
+    </sql>
+    <select id="selectAll" resultMap="BaseResultMap">
+        select <include refid="column"/> from goods
+    </select>
+    <update id="updateStatus" parameterType="java.util.List">
+        update goods set status=1 where goods_id IN
+        <foreach collection="list" item="item" index="index" separator="," open="(" close=")">
+            #{item.goodsId}
+        </foreach>
+    </update>
+    <select id="selectAllByItem" parameterType="java.util.Map" resultMap="BaseResultMap">
+        select <include refid="column"/> from goods where status=0 and MOD(goods_Id, #{shardingTotalCount}) = #{shardingItem} Limit 0, 2
+    </select>
+
+</mapper>

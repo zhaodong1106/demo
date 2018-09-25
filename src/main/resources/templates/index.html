@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
+<head>
+    <title>Hello World!</title>
+    <script type="text/javascript" src="http://code.jquery.com/jquery-1.4.1.min.js"></script>
+    <script type="text/javascript" src="http://code.jquery.com/jquery-1.4.1.js"></script>
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7/jquery.js"></script>
+    <script src="http://malsup.github.com/jquery.form.js"></script>
+    <script type="text/javascript">
+        $(document).ready(function() {
+            $("#btn").click(function () {
+                if(confirm("确认上传？")){
+                    var imagePath = $("#uploadimage").val();
+                    if (imagePath == "") {
+                        alert("please upload image file",2);
+                        return false;
+                    }
+                    var strExtension = imagePath.substr(imagePath.lastIndexOf('.') + 1);
+                    if (strExtension!='jpg') {
+                        if (strExtension!='bmp') {
+                            if (strExtension!='png') {
+                                alert("please upload file that is a image",2);
+                                return false;
+                            }
+                        }
+                    }
+                    $("#upload").ajaxSubmit({
+                        type : 'POST',
+                        url : 'testMultipartFile',
+                        success : function(result) {
+                            if(result.state=='0'){
+                                $("#imgDiv").empty();
+                                $("#imgDiv").html('<img src="'+"http://47.94.105.130:8888/"+result.data+'" style="width:137px;height:127px;"/>');
+                                $("#imgDiv").show();
+                                $("#uploadimage").val("");
+                            }else{
+                                alert(result.msg+":"+result.data);
+                            }
+                        },
+                        error : function() {
+                            alert("上传失败，请检查网络后重试,上传文件太大");
+                        }
+                    });
+                }
+            })
+        });
+    </script>
+</head>
+<body>
+<table>
+    <tr>
+        <td  id="imgDiv">
+            <img id="imgid" src="@{/default.jpg}" style="width:137px; height:127px"/>
+        </td>
+    </tr>
+</table>
+<form id="upload" enctype="multipart/form-data" method="post"><p style='color:#c680ff;text-align:left;'>
+    注：<br/>1.照片的像素为160*180px。<br/>2.照片格式为BMP/JPG/JPEG。<br/>3.建议照片大小不超过40k。</p>
+    <input type="file" name="file" id="uploadimage"/><br/>
+    <input type="button" value="上传" id="btn" style="width:137px; height:27px"/>
+</form>
+</body>
+</html>
