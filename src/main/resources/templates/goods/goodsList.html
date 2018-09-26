@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>goods list</title>
+    <script th:src="@{/js/jquery/jquery-3.3.1.min.js}"></script>
+    <script th:src="@{/js/bootstrap.js}"></script>
+    <link th:href="@{/css/bootstrap.css}" rel="stylesheet">
+</head>
+<body>
+    <div>
+        <p th:text="${name}">dasdas</p>
+    </div>
+    <button id="btn" >查询</button>
+    <table id="tableId">
+        <thead>
+        <tr>
+            <th>序号</th>
+            <th>商品名</th>
+            <th>商品价格</th>
+            <th>商品数量</th>
+        </tr>
+        </thead>
+        <!--<tr  th:each="goods:${goodsList}">-->
+        <!--<tr id="data">-->
+            <!--<td th:text="${goodsStat.count+index}">1</td>-->
+            <!--<td th:text="${goods.goodsName}">大西瓜</td>-->
+            <!--<td th:text="${goods.goodsPrice}">13.5元</td>-->
+            <!--<td th:text="${goods.goodsNum}">11个</td>-->
+        <!--</tr>-->
+    </table>
+    <br>
+    <table>
+        <form  th:action="@{/add}" method="post" th:object="${goods}">
+        <tr>
+            <td><label th:for="*{goodsName}">商品名：</label></td>
+            <td ><input type="text" th:field="*{goodsName}" placeholder="请输入商品名"></td>
+            <td th:if="${#fields.hasErrors('goodsName')}" th:errors="*{goodsName}"></td>
+        </tr>
+         <tr>
+             <td><label th:for="*{goodsPrice}" >价格：</label></td>
+             <td><input type="text" th:field="*{goodsPrice}" placeholder="请输入价格"></td>
+             <td th:if="${#fields.hasErrors('goodsPrice')}" th:errors="*{goodsPrice}"></td>
+         </tr>
+          <tr>
+              <td><input type="submit"></td>
+              <td><input type="reset" ></td>
+          </tr>
+        </form>
+    </table>
+    <button class="btn btn-primary btn-lg btn" id="model" onclick="showModal(1)"></button>
+    <!-- 模态框（Modal） -->
+    <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    <h4 class="modal-title" id="myModalLabel">模态框（Modal）标题</h4>
+                </div>
+                <div class="modal-body">
+                    <form th:action="@{/add}" method="post" id="form2">
+                        <table>
+                        <tr>
+                            <td><label for="goodsName2">商品名：</label></td>
+                            <td ><input type="text" name="goodsName" id="goodsName2" placeholder="请输入商品名"></td>
+                        </tr>
+                        <tr>
+                            <td><label for="goodsPrice2" >价格：</label></td>
+                            <td><input type="text" id="goodsPrice2" name="goodsPrice" placeholder="请输入价格"></td>
+                        </tr>
+                        </table>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                    <button type="button"  id="button1" class="btn btn-primary">提交更改</button>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal -->
+    </div>
+</body>
+<script th:inline="javascript">
+    function  showModal(id) {
+        var obj={'id':id};
+        $.ajax({
+            url:"/queryGoods",
+            type:'post',
+            data:obj,
+            asnyc:false,
+            success:function (data) {
+                $("#form2").find("input[name='goodsName']").attr("value",data.goodsName);
+                $("#form2").find("input[name='goodsPrice']").attr("value",data.goodsPrice);
+            }
+        })
+        $("#myModal").modal('show');
+    }
+    $(function(){
+        $("#button1").click(function () {
+            console.log(1111);
+            $("#form2").submit();
+        });
+        $("#btn").click(function () {
+            $.ajax({
+                url:'/testGoods',
+                type:'get',
+                success:function (data) {
+                    console.log(data);
+                    $("#tableId>tbody").remove();
+                    if(data.length>0){
+                        var tbody=$("<tbody></tbody>");
+                        for(var i=0;i<data.length;i++){
+                            var tr=$("<tr></tr>");
+                            var tdXuHao=$("<td></td>")
+                            tdXuHao.text(i);
+                            tr.append(tdXuHao)
+                            var tdName=$("<td></td>")
+                            tdName.text(data[i].goodsName);
+                            tr.append(tdName)
+                            var tdPrice=$("<td></td>")
+                            tdPrice.text(data[i].goodsPrice);
+                            tr.append(tdPrice)
+                            var tdNum=$("<td></td>")
+                            tdNum.text(data[i].goodsNum);
+                            tr.append(tdNum)
+                            tbody.append(tr);
+                        }
+                        $("#tableId").append(tbody);
+                    }else{
+                        alert("无数据");
+                    }
+                }
+            })
+        });
+    })
+</script>
+</html>

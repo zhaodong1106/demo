@@ -13,12 +13,46 @@
     <select id="selectAll" resultMap="BaseResultMap">
         select <include refid="column"/> from goods
     </select>
+    <insert id="insertSelective" parameterType="com.example.demo.entity.Goods">
+        insert into goods
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="goodsName!=null">
+              goods_name,
+            </if>
+            <if test="goodsPrice!=null">
+                goods_price,
+            </if>
+            <if test="goodsNum!=null">
+                goods_num,
+            </if>
+            <if test="status!=null">
+                status
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="goodsName!=null">
+                #{goodsName},
+            </if>
+            <if test="goodsPrice!=null">
+                #{goodsPrice},
+            </if>
+            <if test="goodsNum!=null">
+                #{goodsNum},
+            </if>
+            <if test="status!=null">
+                #{status}
+            </if>
+        </trim>
+    </insert>
     <update id="updateStatus" parameterType="java.util.List">
         update goods set status=1 where goods_id IN
         <foreach collection="list" item="item" index="index" separator="," open="(" close=")">
             #{item.goodsId}
         </foreach>
     </update>
+    <select id="queryGoods" parameterType="java.lang.Long" resultMap="BaseResultMap">
+        select <include refid="column"/> from goods where goods_id=#{goodsId}
+    </select>
     <select id="selectAllByItem" parameterType="java.util.Map" resultMap="BaseResultMap">
         select <include refid="column"/> from goods where status=0 and MOD(goods_Id, #{shardingTotalCount}) = #{shardingItem} Limit 0, 2
     </select>

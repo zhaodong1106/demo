@@ -12,4 +12,6 @@ public interface GoodsDao {
     List<Goods> selectAll();
     void updateStatus(List<Goods> goodses);
     List<Goods> selectAllByItem(Map map);
+    int insertSelective(Goods goods);
+    Goods queryGoods(Long id);
 }

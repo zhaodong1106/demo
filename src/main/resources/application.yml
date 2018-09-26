@@ -4,17 +4,16 @@ spring:
   application:
     name: demo
   datasource:
-    url: jdbc:mysql://47.94.105.130:3306/spring-security?useSSL=false
+    url: jdbc:mysql://47.94.105.130:3306/spring-security?useSSL=false&characterEncoding=UTF-8
     username: root
     password: ZHAODONGqwe123!@#
     driver-class-name: com.mysql.jdbc.Driver
   thymeleaf:
     encoding: utf-8
     mode: HTML5
-    cache: false
     suffix: .html
-server:
-  port: 8085
+  profiles:
+    active: dev
 mybatis:
   mapper-locations: classpath:mapper/*.xml
 logging:

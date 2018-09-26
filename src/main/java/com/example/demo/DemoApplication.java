@@ -14,7 +14,7 @@ import org.springframework.jmx.support.RegistrationPolicy;
 @Import(FdfsClientConfig.class)
 // 解决jmx重复注册bean的问题
 @EnableMBeanExport(registration = RegistrationPolicy.IGNORE_EXISTING)
-@ImportResource("classpath:job/job.xml")
+//@ImportResource("classpath:job/job.xml")
 public class DemoApplication {
 
 	public static void main(String[] args) {
