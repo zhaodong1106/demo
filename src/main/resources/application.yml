@@ -27,3 +27,8 @@ fdfs:
       height: 150
 fastDfs:
   host: http://47.94.105.130:8888/
+redis:
+  host: 127.0.0.1
+  port: 6379
+  timeout: 10
+

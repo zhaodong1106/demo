@@ -3,3 +3,6 @@ spring:
     cache: true
 server:
   port: 8085
+redis:
+      poolMaxIdle: 500
+      poolMaxTotal: 1000

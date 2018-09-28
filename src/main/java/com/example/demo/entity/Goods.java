@@ -3,6 +3,8 @@ package com.example.demo.entity;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
 import java.math.BigDecimal;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 /**
  * Created by Administrator on 2018-08-21.
@@ -54,5 +56,12 @@ public class Goods {
 
     public void setStatus(int status) {
         this.status = status;
+    }
+
+    public static void main(String[] args){
+        long l = System.currentTimeMillis();
+        SimpleDateFormat sdf=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        System.out.println(new Date(2018,6,1).getTime());
+//        System.out.println(str);
     }
 }
