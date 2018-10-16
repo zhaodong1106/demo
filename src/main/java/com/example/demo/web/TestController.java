@@ -1,8 +1,11 @@
 package com.example.demo.web;
 
 import com.example.demo.dao.GoodsDao;
+import com.example.demo.entity.Comment;
 import com.example.demo.entity.Goods;
+import com.example.demo.exception.DulplidateException;
 import com.example.demo.jedis.RedisService;
+import com.example.demo.service.CommentService;
 import com.example.demo.utils.FtpUtil;
 import com.example.demo.utils.PictureService;
 import org.apache.poi.hwpf.HWPFDocument;
@@ -10,6 +13,7 @@ import org.apache.poi.xwpf.usermodel.XWPFDocument;
 import org.apache.poi.xwpf.usermodel.XWPFParagraph;
 import org.apache.tomcat.util.security.MD5Encoder;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.CookieValue;
@@ -23,6 +27,7 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import java.io.*;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -35,8 +40,15 @@ public class TestController {
     @RequestMapping("/testGoods")
     @ResponseBody
     public List<Goods> testGoods(){
-        return goodsDao.selectAll();
+        throw  new DulplidateException("重复了");
     }
+    @RequestMapping("/testComments")
+    @ResponseBody
+    public List<Comment> testComments(){
+        return commentService.select(2);
+    }
+    @Autowired
+    private CommentService commentService;
     @RequestMapping("/queryGoods")
     @ResponseBody
     public Goods queryGoods(Long id){
@@ -45,6 +57,7 @@ public class TestController {
     @RequestMapping("/testCookie")
     @ResponseBody
     public Object testCookie(@CookieValue(value = "userName",required = false) String userNameForCookie, @CookieValue(value = "userPassword",required = false) String userPasswordForCookie, HttpServletResponse response){
+
         if("zhaodong".equals(userNameForCookie)&&"11064957".equals(userPasswordForCookie)){
             return 200;
         }
@@ -79,7 +92,23 @@ public class TestController {
         if(bindingResult.hasErrors()){
             return new ModelAndView("goods/goodsList");
         }
-        int count = goodsDao.insertSelective(goods);
+        try {
+            int count = goodsDao.insertSelective(goods);
+        }catch (DataAccessException e){
+            e.printStackTrace();
+            System.out.println("dsdasdad");
+        }
+        return new ModelAndView(new RedirectView("/goodsList"));
+    }
+    @RequestMapping("/add1")
+    public ModelAndView add1(){
+        for(int i=0;i<1000;i++) {
+            Goods goods = new Goods();
+            goods.setGoodsName("zhaoshaokangsdsdsd"+i);
+            goods.setGoodsNum(i);
+            goods.setGoodsPrice(new BigDecimal(i+10));
+            int count = goodsDao.insertSelective(goods);
+        }
         return new ModelAndView(new RedirectView("/goodsList"));
     }
     @RequestMapping("/testPoi")

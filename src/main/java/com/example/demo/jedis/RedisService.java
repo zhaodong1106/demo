@@ -38,7 +38,7 @@ public class RedisService {
 	public void init(){
 		System.out.println("进入PostConstruct");
 		StringBuilder sb = new StringBuilder();
-		try(InputStream stream = ScriptUtil.class.getClassLoader().getResourceAsStream("luaScripts/xianliu.lua");
+		try(InputStream stream = getClass().getClassLoader().getResourceAsStream("luaScripts/xianliu.lua");
 			BufferedReader br = new BufferedReader(new InputStreamReader(stream))
 		) {
 
