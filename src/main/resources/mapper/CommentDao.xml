@@ -10,8 +10,15 @@
         <result column="user_id" property="userId"  jdbcType="INTEGER"/>
         <result column="create_date" property="createDate"  jdbcType="TIMESTAMP"/>
     </resultMap>
+    <resultMap id="BaseResultMap2" type="com.example.demo.vo.CommentCountVO">
+        <id column="information_id" property="goodsId" jdbcType="INTEGER"/>
+        <result column="num" property="num"jdbcType="INTEGER"/>
+    </resultMap>
     <sql id="column">
         id,information_id,parent_id,floor,content,user_id,create_date
+    </sql>
+    <sql id="column2">
+       information_id,num
     </sql>
     <insert id="insertComment" parameterType="com.example.demo.entity.Comment">
         insert into comment(information_id,parent_id,floor,content,user_id) VALUES (#{informationId},#{parentId},#{floor},#{content},#{userId})
@@ -24,6 +31,9 @@
     </select>
     <select id="selectAllByItem" parameterType="java.util.Map" resultMap="BaseResultMap">
         select <include refid="column"/> from goods where status=0 and MOD(goods_Id, #{shardingTotalCount}) = #{shardingItem} Limit 0, 2
+    </select>
+    <select id="selectCommentNumByItem" resultMap="BaseResultMap2">
+        select information_id,COUNT(*) AS num FROM COMMENT WHERE create_date>DATE_SUB(NOW(),INTERVAL 10 HOUR) and MOD(information_id, #{shardingTotalCount}) = #{shardingItem} GROUP BY information_id   Limit 0, 2
     </select>
 
 </mapper>

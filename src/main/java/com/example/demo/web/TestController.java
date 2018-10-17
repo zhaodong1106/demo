@@ -35,7 +35,9 @@ import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import java.io.*;
 import java.math.BigDecimal;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -46,20 +48,19 @@ import java.util.Map;
 public class TestController {
     @RequestMapping("/testGoods")
     @ResponseBody
-    public PageInfo<Goods> testGoods(@RequestParam(value = "pageNum",required = false) Integer pageNum, @RequestParam(value = "pageSize",required = false) Integer pageSize){
-        if(pageNum==null){
-            pageNum=1;
-        }
-        if(pageSize==null){
-            pageSize=15;
-        }
+    public PageInfo<Goods> testGoods(@RequestParam(value = "pageNum",required = false,defaultValue = "0") int pageNum, @RequestParam(value = "pageSize",required = false,defaultValue = "15") int pageSize){
         PageHelper.startPage(pageNum,pageSize);
         List<Goods> goodses = goodsDao.selectAll();
         return new PageInfo<Goods>(goodses);
     }
     @RequestMapping("/testComments")
     @ResponseBody
-    public List<Comment> testComments(@RequestParam(value = "informationId",required = false,defaultValue = "0") int informationId){
+    public List<Comment> testComments(@RequestParam(value = "informationId",required = false,defaultValue = "0") int informationId, Comment comment){
+        if(comment.getCreateDate()!=null) {
+            System.out.println(comment.getCreateDate().getTime());
+            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            System.out.println(simpleDateFormat.format(comment.getCreateDate()));
+        }
         return commentService.select(informationId);
     }
     @RequestMapping("/insertComment")
