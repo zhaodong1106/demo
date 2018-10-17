@@ -30,13 +30,10 @@ public class RedisService {
 	JedisPool jedisPool;
 	@Autowired
 	private ObjectMapper objectMapper;
-	
-	/**
-	 * 获取当个对象
-	 * */
-	@PostConstruct
-	public void init(){
-		System.out.println("进入PostConstruct");
+
+
+	public RedisService(){
+		System.out.println("进入默认构造方法");
 		StringBuilder sb = new StringBuilder();
 		try(InputStream stream = getClass().getClassLoader().getResourceAsStream("luaScripts/xianliu.lua");
 			BufferedReader br = new BufferedReader(new InputStreamReader(stream))
@@ -50,8 +47,28 @@ public class RedisService {
 		} catch (IOException e) {
 			System.err.println(e.getStackTrace());
 		}
-
 	}
+//	/**
+//	 * 获取当个对象
+//	 * */
+//	@PostConstruct
+//	public void init(){
+//		System.out.println("进入PostConstruct");
+//		StringBuilder sb = new StringBuilder();
+//		try(InputStream stream = getClass().getClassLoader().getResourceAsStream("luaScripts/xianliu.lua");
+//			BufferedReader br = new BufferedReader(new InputStreamReader(stream))
+//		) {
+//
+//			String str = "";
+//			while ((str = br.readLine()) != null) {
+//				sb.append(str).append(System.lineSeparator());
+//			}
+//			luaScripts=sb.toString();
+//		} catch (IOException e) {
+//			System.err.println(e.getStackTrace());
+//		}
+//
+//	}
 		public Long evalId(String userId,String limit){
 			Jedis jedis=null;
 			try{

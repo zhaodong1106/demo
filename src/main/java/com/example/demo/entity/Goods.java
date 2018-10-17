@@ -1,9 +1,16 @@
 package com.example.demo.entity;
 
+import org.apache.commons.collections.CollectionUtils;
+import org.springframework.format.datetime.DateFormatter;
+
+import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
 import java.math.BigDecimal;
+import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Date;
 
 /**
@@ -14,6 +21,7 @@ public class Goods {
     @NotBlank
     private String goodsName;
     @Min(value = 10)
+    @Max(value=99999999)
     private BigDecimal goodsPrice;
     private int goodsNum;
     private int status;
@@ -59,9 +67,13 @@ public class Goods {
     }
 
     public static void main(String[] args){
-        long l = System.currentTimeMillis();
-        SimpleDateFormat sdf=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        System.out.println(new Date(2018,6,1).getTime());
-//        System.out.println(str);
+        System.out.println(new BigDecimal("0.001").multiply(new BigDecimal("2")));
+        int i=0;
+        System.out.println("i++:"+(i++));
+        int j=0;
+        System.out.println("++j:"+(++j));
+        DateTimeFormatter dtf=DateTimeFormatter.ofPattern("yyyy-MM-dd HH:dd:ss");
+        String format = LocalDateTime.now().plusDays(1).format(dtf);
+        System.out.println(format);
     }
 }

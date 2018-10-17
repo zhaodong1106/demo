@@ -9,4 +9,6 @@ import java.util.List;
  */
 public interface CommentService {
     List<Comment> select(int informationId);
+    int  insertComment(Comment comment);
+    Comment selectById(int id);
 }

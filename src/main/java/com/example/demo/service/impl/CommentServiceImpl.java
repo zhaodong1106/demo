@@ -37,4 +37,14 @@ public class CommentServiceImpl implements CommentService {
         }
         return comments;
     }
+
+    @Override
+    public int insertComment(Comment comment) {
+        return contentDao.insertComment(comment);
+    }
+
+    @Override
+    public Comment selectById(int id) {
+        return contentDao.selectById(id);
+    }
 }

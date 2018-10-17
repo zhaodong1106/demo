@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.example.demo.dao.EmpDao">
+    <resultMap id="BaseResultMap" type="com.example.demo.entity.Emp">
+        <id column="empno" property="empno"  jdbcType="INTEGER"/>
+        <result column="ename" property="ename" jdbcType="VARCHAR"/>
+        <result column="job" property="job" jdbcType="VARCHAR"/>
+        <result column="mgr" property="mgr" jdbcType="INTEGER"/>
+        <result column="hiredate" property="hiredate" jdbcType="DATE"/>
+        <result column="sal" property="sal" jdbcType="DECIMAL"/>
+        <result column="comm" property="comm" jdbcType="DECIMAL"/>
+        <result column="deptno" property="deptno"  jdbcType="INTEGER"/>
+        <result column="job_date" property="jobDate"  jdbcType="DATE"/>
+    </resultMap>
+    <sql id="column">
+        empno,ename,job,mgr,hiredate,sal,comm,deptno,job_date
+    </sql>
+    <select id="selectAll" resultMap="BaseResultMap">
+        select <include refid="column"/> from emp
+    </select>
+    <insert id="insertSelective" parameterType="com.example.demo.entity.Goods">
+        insert into goods
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="goodsName!=null">
+              goods_name,
+            </if>
+            <if test="goodsPrice!=null">
+                goods_price,
+            </if>
+            <if test="goodsNum!=null">
+                goods_num,
+            </if>
+            <if test="status!=null">
+                status
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="goodsName!=null">
+                #{goodsName},
+            </if>
+            <if test="goodsPrice!=null">
+                #{goodsPrice},
+            </if>
+            <if test="goodsNum!=null">
+                #{goodsNum},
+            </if>
+            <if test="status!=null">
+                #{status}
+            </if>
+        </trim>
+    </insert>
+    <update id="updateStatus" parameterType="java.util.List">
+        update emp set job_date=CURRENT_DATE where empno IN
+        <foreach collection="list" item="item" index="index" separator="," open="(" close=")">
+            #{item.empno}
+        </foreach>
+    </update>
+    <select id="queryGoods" parameterType="java.lang.Long" resultMap="BaseResultMap">
+        select <include refid="column"/> from goods where goods_id=#{goodsId}
+    </select>
+    <select id="selectAllByItem" parameterType="java.util.Map" resultMap="BaseResultMap">
+        select <include refid="column"/> from emp where  <![CDATA[job_date<CURRENT_DATE]]>  and MOD(empno, #{shardingTotalCount}) = #{shardingItem} Limit 0, 2
+    </select>
+
+</mapper>

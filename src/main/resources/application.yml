@@ -31,4 +31,8 @@ redis:
   host: 127.0.0.1
   port: 6379
   timeout: 10
+pagehelper:
+  reasonable: true
+  support-methods-arguments: false
+  helper-dialect: mysql
 

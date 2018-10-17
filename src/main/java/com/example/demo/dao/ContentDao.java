@@ -10,4 +10,5 @@ import java.util.List;
 public interface ContentDao {
     Comment selectById(int id);
     List<Comment> selectByInformationId(int informationId);
+    int  insertComment(Comment comment);
 }

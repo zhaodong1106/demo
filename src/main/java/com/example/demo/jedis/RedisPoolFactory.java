@@ -1,27 +1,25 @@
 package com.example.demo.jedis;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.stereotype.Service;
 
 import redis.clients.jedis.JedisPool;
 import redis.clients.jedis.JedisPoolConfig;
 
 @Configuration
+@ConfigurationProperties(prefix = "redis")
 public class RedisPoolFactory {
 
-	@Value("${redis.host}")
+//	@Value("${redis.host}")
 	private String host;
-	@Value("${redis.port}")
+//	@Value("${redis.port}")
 	private int port;
-	@Value("${redis.poolMaxIdle}")
+//	@Value("${redis.poolMaxIdle}")
 	private int poolMaxIdle;
-	@Value("${redis.poolMaxTotal}")
-	private int maxTotal;
-	@Value("${redis.timeout}")
+//	@Value("${redis.poolMaxTotal}")
+	private int poolMaxTotal;
+//	@Value("${redis.timeout}")
 	private int timeout;
 
 	
@@ -29,10 +27,49 @@ public class RedisPoolFactory {
 	public JedisPool JedisPoolFactory() {
 		JedisPoolConfig poolConfig = new JedisPoolConfig();
 		poolConfig.setMaxIdle(poolMaxIdle);
-		poolConfig.setMaxTotal(maxTotal);
+		poolConfig.setMaxTotal(poolMaxTotal);
 		JedisPool jp = new JedisPool(poolConfig,host, port,
 				timeout*1000);
 		return jp;
 	}
-	
+
+	public String getHost() {
+		return host;
+	}
+
+	public void setHost(String host) {
+		this.host = host;
+	}
+
+	public int getPort() {
+		return port;
+	}
+
+	public void setPort(int port) {
+		this.port = port;
+	}
+
+	public int getPoolMaxIdle() {
+		return poolMaxIdle;
+	}
+
+	public void setPoolMaxIdle(int poolMaxIdle) {
+		this.poolMaxIdle = poolMaxIdle;
+	}
+
+	public int getPoolMaxTotal() {
+		return poolMaxTotal;
+	}
+
+	public void setPoolMaxTotal(int poolMaxTotal) {
+		this.poolMaxTotal = poolMaxTotal;
+	}
+
+	public int getTimeout() {
+		return timeout;
+	}
+
+	public void setTimeout(int timeout) {
+		this.timeout = timeout;
+	}
 }

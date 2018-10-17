@@ -2,12 +2,18 @@ package com.example.demo.web;
 
 import com.example.demo.dao.GoodsDao;
 import com.example.demo.entity.Comment;
+import com.example.demo.dao.GoodsOrderDao;
 import com.example.demo.entity.Goods;
 import com.example.demo.exception.DulplidateException;
+import com.example.demo.exception.OrderError;
+import com.example.demo.jedis.ApiResponse;
 import com.example.demo.jedis.RedisService;
 import com.example.demo.service.CommentService;
 import com.example.demo.utils.FtpUtil;
 import com.example.demo.utils.PictureService;
+import com.github.pagehelper.Page;
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
 import org.apache.poi.hwpf.HWPFDocument;
 import org.apache.poi.xwpf.usermodel.XWPFDocument;
 import org.apache.poi.xwpf.usermodel.XWPFParagraph;
@@ -18,6 +24,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
@@ -39,27 +46,77 @@ import java.util.Map;
 public class TestController {
     @RequestMapping("/testGoods")
     @ResponseBody
-    public List<Goods> testGoods(){
-        throw  new DulplidateException("重复了");
+    public PageInfo<Goods> testGoods(@RequestParam(value = "pageNum",required = false) Integer pageNum, @RequestParam(value = "pageSize",required = false) Integer pageSize){
+        if(pageNum==null){
+            pageNum=1;
+        }
+        if(pageSize==null){
+            pageSize=15;
+        }
+        PageHelper.startPage(pageNum,pageSize);
+        List<Goods> goodses = goodsDao.selectAll();
+        return new PageInfo<Goods>(goodses);
     }
     @RequestMapping("/testComments")
     @ResponseBody
-    public List<Comment> testComments(){
-        return commentService.select(2);
+    public List<Comment> testComments(@RequestParam(value = "informationId",required = false,defaultValue = "0") int informationId){
+        return commentService.select(informationId);
+    }
+    @RequestMapping("/insertComment")
+    @ResponseBody
+    public Object insertComment(@RequestParam(value = "parentId",required = false,defaultValue = "0") int parentId,String contentText){
+        if(contentText==null||"".equals(contentText.trim())){
+            return ApiResponse.ofSuccess("发送失败");
+        }
+        Comment comment=new Comment();
+        comment.setContent(contentText);
+        comment.setInformationId(3);
+        comment.setUserId(335);
+        if(parentId==0){
+            comment.setParentId(0);
+            comment.setFloor(1);
+            commentService.insertComment(comment);
+        }else {
+            Comment comment1 = commentService.selectById(parentId);
+            if(comment1==null){
+                comment.setParentId(0);
+                comment.setFloor(1);
+                commentService.insertComment(comment);
+            }else {
+                comment.setParentId(parentId);
+                comment.setFloor(comment1.getFloor() + 1);
+                commentService.insertComment(comment);
+            }
+        }
+        return ApiResponse.ofSuccess("success");
+
     }
     @Autowired
     private CommentService commentService;
     @RequestMapping("/queryGoods")
-    @ResponseBody
     public Goods queryGoods(Long id){
-        return goodsDao.queryGoods(id);
+        throw new RuntimeException("orderError,please Try it again");
+    }
+    @RequestMapping("/insertGoodsOrder")
+    @ResponseBody
+    public Object insertGoodsOrder(){
+        for(int i=21;i<500;i++) {
+            goodsOrderDao.insert(Long.valueOf(i),Long.valueOf(i+1),i+2);
+        }
+        return "success";
+    }
+    @Autowired
+    private GoodsOrderDao goodsOrderDao;
+    @RequestMapping("/")
+    public ModelAndView index(Long id){
+        return new ModelAndView("index").addObject("goods",new Goods());
     }
     @RequestMapping("/testCookie")
     @ResponseBody
     public Object testCookie(@CookieValue(value = "userName",required = false) String userNameForCookie, @CookieValue(value = "userPassword",required = false) String userPasswordForCookie, HttpServletResponse response){
 
         if("zhaodong".equals(userNameForCookie)&&"11064957".equals(userPasswordForCookie)){
-            return 200;
+            return ApiResponse.ofSuccess(200);
         }
         Cookie cookieValue=new Cookie("userName","zhaodong");
         cookieValue.setPath("/");
@@ -69,7 +126,7 @@ public class TestController {
         cookieValue2.setMaxAge(3600);
         response.addCookie(cookieValue);
         response.addCookie(cookieValue2);
-        return 100;
+        return ApiResponse.ofSuccess(1);
     }
     @RequestMapping("/getIdGenerator")
     @ResponseBody
@@ -80,12 +137,13 @@ public class TestController {
     private RedisService redisService;
     @RequestMapping("/goodsList")
     public ModelAndView goodsList(Integer pageNo){
-        List<Goods> goodses=new ArrayList<>();
-        int index=0;
-        if(pageNo!=null &&pageNo>0) {
-            index = pageNo * 15;
+        if(pageNo==null){
+            pageNo=15;
         }
-        return new ModelAndView("goods/goodsList").addObject("name","zhaodong").addObject("goods",new Goods()).addObject("goodsList",goodsDao.selectAll()).addObject("index",index);
+        PageHelper.startPage(1,pageNo);
+        List<Goods> goodses = goodsDao.selectAll();
+        int index=1;
+        return new ModelAndView("goods/goodsList").addObject("str",123456).addObject("name","zhaodong").addObject("goods",new Goods()).addObject("goodsList",goodses).addObject("index",index);
     }
     @RequestMapping("/add")
     public ModelAndView add(@Valid Goods goods,BindingResult bindingResult){

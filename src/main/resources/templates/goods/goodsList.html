@@ -15,7 +15,7 @@
     <div>
         <p th:text="${name}">dasdas</p>
     </div>
-    <button id="btn" >查询</button>
+    <button id="btn"  class="btn btn-primary btn-lg">查询</button>
     <table id="tableId">
         <thead>
         <tr>
@@ -116,6 +116,7 @@
             </div>
         </div>
     </form>
+    <button class="btn btn-primary btn-lg" th:onclick="'javascript:showAlert('+${str}+')'" >show time</button>
     <button class="btn btn-primary btn-lg btn" id="model" onclick="showModal(1)"></button>
     <!-- 模态框（Modal） -->
     <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
@@ -148,6 +149,10 @@
     </div>
 </body>
 <script th:inline="javascript">
+    function showAlert(str) {
+        console.log(111111);
+        alert(str)
+    }
     function  showModal(id) {
         var obj={'id':id};
         $.ajax({

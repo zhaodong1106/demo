@@ -13,6 +13,9 @@
     <sql id="column">
         id,information_id,parent_id,floor,content,user_id,create_date
     </sql>
+    <insert id="insertComment" parameterType="com.example.demo.entity.Comment">
+        insert into comment(information_id,parent_id,floor,content,user_id) VALUES (#{informationId},#{parentId},#{floor},#{content},#{userId})
+    </insert>
     <select id="selectById" resultMap="BaseResultMap" parameterType="java.lang.Integer">
         select <include refid="column"/> from comment where id=#{id}
     </select>
