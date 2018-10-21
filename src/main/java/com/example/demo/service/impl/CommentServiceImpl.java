@@ -18,8 +18,8 @@ public class CommentServiceImpl implements CommentService {
     @Autowired
     private ContentDao contentDao;
     @Override
-    public List<Comment> select(int informationId) {
-        List<Comment> comments = contentDao.selectByInformationId(informationId);
+    public List<Comment> select(int informationId,Integer commentId) {
+        List<Comment> comments = contentDao.selectByInformationId(informationId,commentId);
         for(Comment comment:comments){
             int floor = comment.getFloor();
             if(floor!=1){

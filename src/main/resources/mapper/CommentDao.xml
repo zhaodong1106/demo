@@ -12,7 +12,7 @@
     </resultMap>
     <resultMap id="BaseResultMap2" type="com.example.demo.vo.CommentCountVO">
         <id column="information_id" property="goodsId" jdbcType="INTEGER"/>
-        <result column="num" property="num"jdbcType="INTEGER"/>
+        <result column="num" property="num" jdbcType="INTEGER"/>
     </resultMap>
     <sql id="column">
         id,information_id,parent_id,floor,content,user_id,create_date
@@ -24,10 +24,14 @@
         insert into comment(information_id,parent_id,floor,content,user_id) VALUES (#{informationId},#{parentId},#{floor},#{content},#{userId})
     </insert>
     <select id="selectById" resultMap="BaseResultMap" parameterType="java.lang.Integer">
-        select <include refid="column"/> from comment where id=#{id}
+        select <include refid="column"/> from comments where id=#{id}
     </select>
-    <select id="selectByInformationId" parameterType="java.lang.Integer" resultMap="BaseResultMap">
-        select <include refid="column"/> from comment where information_id=#{informationId} order by create_date desc
+    <select id="selectByInformationId"  resultMap="BaseResultMap">
+        select <include refid="column"/> from comments where information_id=#{informationId}
+        <if test="id!=null">
+          and <![CDATA[id<#{id}]]>
+        </if>
+        order by id desc limit 0,2
     </select>
     <select id="selectAllByItem" parameterType="java.util.Map" resultMap="BaseResultMap">
         select <include refid="column"/> from goods where status=0 and MOD(goods_Id, #{shardingTotalCount}) = #{shardingItem} Limit 0, 2

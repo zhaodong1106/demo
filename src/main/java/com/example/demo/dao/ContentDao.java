@@ -1,6 +1,7 @@
 package com.example.demo.dao;
 
 import com.example.demo.entity.Comment;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
@@ -9,6 +10,6 @@ import java.util.List;
  */
 public interface ContentDao {
     Comment selectById(int id);
-    List<Comment> selectByInformationId(int informationId);
+    List<Comment> selectByInformationId(@Param("informationId") int informationId, @Param("id") Integer id);
     int  insertComment(Comment comment);
 }
