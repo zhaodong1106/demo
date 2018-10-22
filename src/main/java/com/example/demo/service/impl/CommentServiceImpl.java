@@ -3,6 +3,8 @@ package com.example.demo.service.impl;
 import com.example.demo.dao.ContentDao;
 import com.example.demo.entity.Comment;
 import com.example.demo.service.CommentService;
+import com.example.demo.vo.CommentCountVO;
+import org.apache.ibatis.annotations.Param;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -46,5 +48,15 @@ public class CommentServiceImpl implements CommentService {
     @Override
     public Comment selectById(int id) {
         return contentDao.selectById(id);
+    }
+
+    @Override
+    public void updateStatus(int informationId) {
+        contentDao.updateStatus(informationId);
+    }
+
+    @Override
+    public List<CommentCountVO> selectCommentNumByItem(@Param("shardingTotalCount") int shardingTotalCount, @Param("shardingItem") int shardingItem) {
+        return contentDao.selectCommentNumByItem(shardingTotalCount, shardingItem);
     }
 }

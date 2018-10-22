@@ -25,6 +25,7 @@ public class Goods {
     private BigDecimal goodsPrice;
     private int goodsNum;
     private int status;
+    private Integer CommentCount;
 
     public String getGoodsId() {
         return goodsId;
@@ -64,6 +65,14 @@ public class Goods {
 
     public void setStatus(int status) {
         this.status = status;
+    }
+
+    public Integer getCommentCount() {
+        return CommentCount;
+    }
+
+    public void setCommentCount(Integer commentCount) {
+        CommentCount = commentCount;
     }
 
     public static void main(String[] args){

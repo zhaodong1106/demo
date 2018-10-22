@@ -14,7 +14,7 @@
     <reg:zookeeper id="regCenter" server-lists="127.0.0.1:2181" namespace="dd-job" base-sleep-time-milliseconds="1000" max-sleep-time-milliseconds="3000" max-retries="3" />
 
     <!--configure job -->
-    <job:simple id="commentCount" class="com.example.demo.job.CommentCount" registry-center-ref="regCenter" cron="0/10 * * * * ?"   sharding-total-count="1" sharding-item-parameters="0=A />
-    <job:dataflow id="myElasticJobForEmp" class="com.example.demo.job.MyElasticJobForEmp" registry-center-ref="regCenter"
-                  sharding-total-count="2" cron="0 6 * * * ?" streaming-process="true" overwrite="true" sharding-item-parameters="0=A,1=B" failover="true" monitor-execution="true"/>
+    <!--<job:simple id="commentCount" class="com.example.demo.job.CommentCount" registry-center-ref="regCenter" cron="0/10 * * * * ?"   sharding-total-count="1" sharding-item-parameters="0=A />-->
+    <job:dataflow id="commentCount" class="com.example.demo.job.CommentCount" registry-center-ref="regCenter"
+                  sharding-total-count="2" cron="0 11 * * * ?" streaming-process="true" overwrite="true" sharding-item-parameters="0=A,1=B" failover="true" monitor-execution="true"/>
 </beans>

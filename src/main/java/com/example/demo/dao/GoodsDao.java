@@ -1,6 +1,8 @@
 package com.example.demo.dao;
 
 import com.example.demo.entity.Goods;
+import com.example.demo.vo.CommentCountVO;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 import java.util.Map;
@@ -14,4 +16,5 @@ public interface GoodsDao {
     List<Goods> selectAllByItem(Map map);
     int insertSelective(Goods goods);
     Goods queryGoods(Long id);
+    void updateCommentCount(List<CommentCountVO> list);
 }

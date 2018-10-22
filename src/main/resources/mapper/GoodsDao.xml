@@ -56,5 +56,10 @@
     <select id="selectAllByItem" parameterType="java.util.Map" resultMap="BaseResultMap">
         select <include refid="column"/> from goods where status=0 and MOD(goods_Id, #{shardingTotalCount}) = #{shardingItem} Limit 0, 2
     </select>
+    <update id="updateCommentCount" parameterType="java.util.List">
+        <foreach collection="list" separator=";" item="item">
+             update goods set comment_count=comment_count+#{item.num} where goods_id=#{item.goodsId}
+        </foreach>
+    </update>
 
 </mapper>

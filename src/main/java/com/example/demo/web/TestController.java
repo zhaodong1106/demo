@@ -4,6 +4,7 @@ import com.example.demo.dao.GoodsDao;
 import com.example.demo.entity.Comment;
 import com.example.demo.dao.GoodsOrderDao;
 import com.example.demo.entity.Goods;
+import com.example.demo.entity.Greeting;
 import com.example.demo.exception.DulplidateException;
 import com.example.demo.exception.OrderError;
 import com.example.demo.jedis.ApiResponse;
@@ -20,6 +21,8 @@ import org.apache.poi.xwpf.usermodel.XWPFParagraph;
 import org.apache.tomcat.util.security.MD5Encoder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
+import org.springframework.messaging.handler.annotation.MessageMapping;
+import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.CookieValue;
@@ -63,6 +66,14 @@ public class TestController {
         }
         return commentService.select(informationId,id);
     }
+    @MessageMapping("/hello") //使用MessageMapping注解来标识所有发送到“/hello”这个destination的消息，都会被路由到这个方法进行处理.
+    @SendTo("/topic/greetings") //使用SendTo注解来标识这个方法返回的结果，都会被发送到它指定的destination，“/topic/greetings”.
+    //传入的参数HelloMessage为客户端发送过来的消息，是自动绑定的。
+    public Greeting greeting(String message) throws Exception {
+//        Thread.sleep(1000); // 模拟处理延时
+        return new Greeting("Hello, " +message+ "!"); //根据传入的信息，返回一个欢迎消息.
+    }
+
     @RequestMapping("/insertComment")
     @ResponseBody
     public Object insertComment(@RequestParam(value = "parentId",required = false,defaultValue = "0") int parentId,String contentText){

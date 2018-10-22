@@ -4,7 +4,7 @@ spring:
   application:
     name: demo
   datasource:
-    url: jdbc:mysql://47.94.105.130:3306/spring-security?useSSL=false&characterEncoding=UTF-8
+    url: jdbc:mysql://47.94.105.130:3306/spring-security?useSSL=false&characterEncoding=UTF-8&allowMultiQueries=true
     username: root
     password: ZHAODONGqwe123!@#
     driver-class-name: com.mysql.jdbc.Driver

@@ -21,7 +21,7 @@
        information_id,num
     </sql>
     <insert id="insertComment" parameterType="com.example.demo.entity.Comment">
-        insert into comment(information_id,parent_id,floor,content,user_id) VALUES (#{informationId},#{parentId},#{floor},#{content},#{userId})
+        insert into comments(information_id,parent_id,floor,content,user_id) VALUES (#{informationId},#{parentId},#{floor},#{content},#{userId})
     </insert>
     <select id="selectById" resultMap="BaseResultMap" parameterType="java.lang.Integer">
         select <include refid="column"/> from comments where id=#{id}
@@ -37,7 +37,10 @@
         select <include refid="column"/> from goods where status=0 and MOD(goods_Id, #{shardingTotalCount}) = #{shardingItem} Limit 0, 2
     </select>
     <select id="selectCommentNumByItem" resultMap="BaseResultMap2">
-        select information_id,COUNT(*) AS num FROM COMMENT WHERE create_date>DATE_SUB(NOW(),INTERVAL 10 HOUR) and MOD(information_id, #{shardingTotalCount}) = #{shardingItem} GROUP BY information_id   Limit 0, 2
+        select information_id,COUNT(*) AS num FROM comments WHERE  status=0 and MOD(information_id, #{shardingTotalCount}) = #{shardingItem} GROUP BY information_id   Limit 0, 2
     </select>
+    <update id="updateStatus">
+        update comments set status=1 where information_id=#{informationId}
+    </update>
 
 </mapper>
