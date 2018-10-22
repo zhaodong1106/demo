@@ -5,6 +5,7 @@ import com.example.demo.entity.Comment;
 import com.example.demo.dao.GoodsOrderDao;
 import com.example.demo.entity.Goods;
 import com.example.demo.entity.Greeting;
+import com.example.demo.entity.HelloMessage;
 import com.example.demo.exception.DulplidateException;
 import com.example.demo.exception.OrderError;
 import com.example.demo.jedis.ApiResponse;
@@ -69,9 +70,9 @@ public class TestController {
     @MessageMapping("/hello") //使用MessageMapping注解来标识所有发送到“/hello”这个destination的消息，都会被路由到这个方法进行处理.
     @SendTo("/topic/greetings") //使用SendTo注解来标识这个方法返回的结果，都会被发送到它指定的destination，“/topic/greetings”.
     //传入的参数HelloMessage为客户端发送过来的消息，是自动绑定的。
-    public Greeting greeting(String message) throws Exception {
+    public Greeting greeting(HelloMessage message) throws Exception {
 //        Thread.sleep(1000); // 模拟处理延时
-        return new Greeting("Hello, " +message+ "!"); //根据传入的信息，返回一个欢迎消息.
+        return new Greeting("Hello, " +message.getName()+ "!"); //根据传入的信息，返回一个欢迎消息.
     }
 
     @RequestMapping("/insertComment")
