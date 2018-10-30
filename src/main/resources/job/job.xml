@@ -15,6 +15,6 @@
 
     <!--configure job -->
     <!--<job:simple id="commentCount" class="com.example.demo.job.CommentCount" registry-center-ref="regCenter" cron="0/10 * * * * ?"   sharding-total-count="1" sharding-item-parameters="0=A />-->
-    <job:dataflow id="commentCount" class="com.example.demo.job.CommentCount" registry-center-ref="regCenter"
-                  sharding-total-count="2" cron="0 11 * * * ?" streaming-process="true" overwrite="true" sharding-item-parameters="0=A,1=B" failover="true" monitor-execution="true"/>
+    <job:dataflow id="myElasticJobForEmp" class="com.example.demo.job.MyElasticJobForEmp" registry-center-ref="regCenter"
+                  sharding-total-count="2" cron="0 40 * * * ?" streaming-process="true" overwrite="true" sharding-item-parameters="0=A,1=B" failover="true" monitor-execution="true"/>
 </beans>

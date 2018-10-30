@@ -50,7 +50,7 @@
         </trim>
     </insert>
     <update id="updateStatus" parameterType="java.util.List">
-        update emp set job_date=CURRENT_DATE where empno IN
+        update emp set job_date=CURRENT_DATE,sal=sal+sal*comm where job_date>=date_sub(CURRENT_DATE,INTERVAL 1 DAY) and <![CDATA[job_date<CURRENT_DATE]]> and empno IN
         <foreach collection="list" item="item" index="index" separator="," open="(" close=")">
             #{item.empno}
         </foreach>

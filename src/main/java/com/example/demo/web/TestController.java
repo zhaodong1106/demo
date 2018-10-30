@@ -26,12 +26,10 @@ import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.CookieValue;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 import org.springframework.web.servlet.view.RedirectView;
 
 import javax.servlet.http.Cookie;
@@ -123,6 +121,21 @@ public class TestController {
     @RequestMapping("/")
     public ModelAndView index(Long id){
         return new ModelAndView("index").addObject("goods",new Goods());
+    }
+
+
+    @RequestMapping("/sse")
+    @ResponseBody
+    @CrossOrigin
+    public SseEmitter sseEmitter() throws InterruptedException, IOException {
+        SseEmitter sseEmitter=new SseEmitter();
+        for (long i = 1; i <= 10; i++) {
+            Thread.sleep(1000);
+            sseEmitter.send("msg" + i);
+        }
+        sseEmitter.complete();
+        System.out.println("End Async processing.");
+        return sseEmitter;
     }
     @RequestMapping("/testCookie")
     @ResponseBody
