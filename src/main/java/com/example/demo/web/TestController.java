@@ -13,9 +13,12 @@ import com.example.demo.jedis.RedisService;
 import com.example.demo.service.CommentService;
 import com.example.demo.utils.FtpUtil;
 import com.example.demo.utils.PictureService;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import org.apache.commons.collections.map.HashedMap;
 import org.apache.poi.hwpf.HWPFDocument;
 import org.apache.poi.xwpf.usermodel.XWPFDocument;
 import org.apache.poi.xwpf.usermodel.XWPFParagraph;
@@ -24,24 +27,29 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.SendTo;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Controller;
+import org.springframework.util.FileCopyUtils;
+import org.springframework.util.ResourceUtils;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 import org.springframework.web.servlet.view.RedirectView;
+import org.springframework.web.util.*;
 
 import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 import java.io.*;
 import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
+import java.time.Instant;
+import java.util.*;
 
 /**
  * Created by Administrator on 2018-08-21.
@@ -50,11 +58,21 @@ import java.util.Map;
 public class TestController {
     @RequestMapping("/testGoods")
     @ResponseBody
-    public PageInfo<Goods> testGoods(@RequestParam(value = "pageNum",required = false,defaultValue = "0") int pageNum, @RequestParam(value = "pageSize",required = false,defaultValue = "15") int pageSize){
+    public PageInfo<Goods> testGoods(HttpServletRequest request,@RequestParam(value = "pageNum",required = false,defaultValue = "0")int pageNum, @RequestParam(value = "pageSize",required = false,defaultValue = "15") int pageSize){
+        String sessionId = (String) WebUtils.getSessionAttribute(request,"name");
+        System.out.println("sessionId:"+sessionId);
+
         PageHelper.startPage(pageNum,pageSize);
         List<Goods> goodses = goodsDao.selectAll();
         return new PageInfo<Goods>(goodses);
     }
+    @RequestMapping("/selectByStudentId")
+    @ResponseBody
+    public Object selectByStudentId(@RequestParam(value="studentId",required = false,defaultValue = "133") int studentId){
+        return goodsOrderDao.selectByStudentId(studentId);
+    }
+    @Autowired
+    private GoodsOrderDao goodsOrderDao;
     @RequestMapping("/testComments")
     @ResponseBody
     public List<Comment> testComments(@RequestParam(value = "informationId",required = false,defaultValue = "0") int informationId, Integer id, Comment comment){
@@ -72,7 +90,22 @@ public class TestController {
 //        Thread.sleep(1000); // 模拟处理延时
         return new Greeting("Hello, " +message.getName()+ "!"); //根据传入的信息，返回一个欢迎消息.
     }
-
+//    @Scheduled(fixedRate=3000)
+//    public void sendJvmInfo(){
+//        //可用进程数
+//        int availa = Runtime.getRuntime().availableProcessors();
+//        //空闲内存
+//        long free = Runtime.getRuntime().freeMemory();
+//        //最大内存数
+//        long max = Runtime.getRuntime().maxMemory();
+//
+//        String content = String.format("可用进程数:%s 空闲内存:%s 最大内存数:%s",availa,free,max);
+//        System.out.println("信息: "+content);
+//        Greeting greeting=new Greeting(content);
+//        template.convertAndSend("/monitor/jvm/info",greeting);
+//    }
+    @Autowired
+    private SimpMessagingTemplate template;
     @RequestMapping("/insertComment")
     @ResponseBody
     public Object insertComment(@RequestParam(value = "parentId",required = false,defaultValue = "0") int parentId,String contentText){
@@ -104,9 +137,11 @@ public class TestController {
     }
     @Autowired
     private CommentService commentService;
-    @RequestMapping("/queryGoods")
-    public Goods queryGoods(Long id){
-        throw new RuntimeException("orderError,please Try it again");
+    @RequestMapping(value = "/getSession")
+    @ResponseBody
+    public Object queryGoods(HttpServletRequest request){
+        WebUtils.setSessionAttribute(request,"name","zhao");
+        return "sucess";
     }
     @RequestMapping("/insertGoodsOrder")
     @ResponseBody
@@ -116,27 +151,52 @@ public class TestController {
         }
         return "success";
     }
-    @Autowired
-    private GoodsOrderDao goodsOrderDao;
     @RequestMapping("/")
-    public ModelAndView index(Long id){
+    public ModelAndView index(HttpServletRequest request,HttpServletResponse response,Long id){
+//        CookieGenerator cookieGenerator=new CookieGenerator();
+//        cookieGenerator.setCookieName("name");
+//        cookieGenerator.setCookieMaxAge(3600);
+//        cookieGenerator.addCookie(response,"zhaodong");
+        Cookie nameCookie = WebUtils.getCookie(request, "name");
+        Cookie passwordCookie = WebUtils.getCookie(request, "password");
+        if(nameCookie!=null&&passwordCookie!=null){
+            String name=nameCookie.getValue();
+            String password=passwordCookie.getValue();
+            WebUtils.setSessionAttribute(request,"name",name);
+            WebUtils.setSessionAttribute(request,"password",password);
+
+        }
+//        WebUtils.setSessionAttribute(request,"name","zhaodong");
         return new ModelAndView("index").addObject("goods",new Goods());
     }
-
-
-    @RequestMapping("/sse")
+    @RequestMapping("/testResourceUtils")
     @ResponseBody
-    @CrossOrigin
-    public SseEmitter sseEmitter() throws InterruptedException, IOException {
-        SseEmitter sseEmitter=new SseEmitter();
-        for (long i = 1; i <= 10; i++) {
-            Thread.sleep(1000);
-            sseEmitter.send("msg" + i);
+    public Object testResourceUtils(){
+        try {
+//            File file = ResourceUtils.getFile("classpath:luaScripts/xianliu.lua");
+            File file = ResourceUtils.getFile("file:C:\\Users\\T011689\\logout.log");
+            String copyToString = FileCopyUtils.copyToString(new FileReader(file));
+            return copyToString;
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }catch (IOException e) {
+            e.printStackTrace();
         }
-        sseEmitter.complete();
-        System.out.println("End Async processing.");
-        return sseEmitter;
+        return null;
     }
+
+//    @RequestMapping(value = "/sse", produces = "text/event-stream;charset=UTF-8")
+//    @ResponseBody
+//    @CrossOrigin
+//    public String sseEmitter() throws JsonProcessingException {
+//        Map map=new HashMap();
+//        map.put("count",new Random().nextInt(100));
+//        String s = objectMapper.writeValueAsString(map);
+//        System.out.println("End Async processing.");
+//        return s + "\n\n";
+//    }
+    @Autowired
+    private ObjectMapper objectMapper;
     @RequestMapping("/testCookie")
     @ResponseBody
     public Object testCookie(@CookieValue(value = "userName",required = false) String userNameForCookie, @CookieValue(value = "userPassword",required = false) String userPasswordForCookie, HttpServletResponse response){
@@ -162,7 +222,9 @@ public class TestController {
     @Autowired
     private RedisService redisService;
     @RequestMapping("/goodsList")
-    public ModelAndView goodsList(Integer pageNo){
+    public ModelAndView goodsList(HttpServletRequest request,Integer pageNo){
+        String sessionId = WebUtils.getSessionId(request);
+        System.out.println("sessionId:"+sessionId);
         if(pageNo==null){
             pageNo=15;
         }

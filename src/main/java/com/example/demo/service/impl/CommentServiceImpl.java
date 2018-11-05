@@ -19,8 +19,8 @@ import java.util.List;
 public class CommentServiceImpl implements CommentService {
     @Autowired
     private ContentDao contentDao;
-    @Override
-    public List<Comment> select(int informationId,Integer commentId) {
+
+    public List<Comment> select(int informationId, int commentId) {
         List<Comment> comments = contentDao.selectByInformationId(informationId,commentId);
         for(Comment comment:comments){
             int floor = comment.getFloor();

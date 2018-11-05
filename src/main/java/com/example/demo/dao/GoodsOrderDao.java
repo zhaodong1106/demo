@@ -1,7 +1,9 @@
 package com.example.demo.dao;
 
+import com.example.demo.entity.GoodsOrder;
 import org.apache.ibatis.annotations.Param;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -9,4 +11,5 @@ import java.util.Map;
  */
 public interface GoodsOrderDao {
     public void insert(@Param("studentId") Long studentId,@Param("goodsId") Long goodsId,@Param("goodsNum") int goodsNum);
+    List<GoodsOrder> selectByStudentId(@Param("studentId") Integer studentId);
 }

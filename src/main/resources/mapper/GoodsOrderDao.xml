@@ -1,6 +1,31 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.example.demo.dao.GoodsOrderDao">
+    <resultMap id="BaseResultMap" type="com.example.demo.entity.GoodsOrder">
+        <id column="order_id" property="orderId" jdbcType="INTEGER"></id>
+        <result column="student_id" property="studentId" jdbcType="INTEGER"/>
+        <result column="goods_id" property="goodsId" jdbcType="INTEGER"/>
+        <result column="goods_num" property="goodsNum" jdbcType="INTEGER"/>
+        <association property="goods" column="goods_id" columnPrefix="g_" javaType="com.example.demo.entity.Goods">
+                <id column="goods_id" property="goodsId"></id>
+                <result column="goods_name" property="goodsName"/>
+                <result column="goods_price" property="goodsPrice"/>
+                <result column="update_time" property="updateTime"></result>
+        </association>
+    </resultMap>
+    <sql id="column">
+        go.order_id,
+        go.student_id,
+        go.goods_id,
+        go.goods_num,
+        g.goods_id as g_goods_id,
+        g.goods_name as g_goods_name,
+        g.goods_price as g_goods_price,
+        g.update_time as g_update_time
+    </sql>
+    <select id="selectByStudentId" resultMap="BaseResultMap">
+         SELECT <include refid="column"/> FROM goods_order go INNER JOIN goods g USING(goods_id) where student_id=#{studentId}
+    </select>
     <insert id="insert">
         insert into goods_order(student_id,goods_id,goods_num) VALUES(#{studentId},#{goodsId},#{goodsNum})
     </insert>

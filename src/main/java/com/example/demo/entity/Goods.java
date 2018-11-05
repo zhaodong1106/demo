@@ -1,5 +1,6 @@
 package com.example.demo.entity;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.format.datetime.DateFormatter;
 
@@ -11,13 +12,15 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Arrays;
 import java.util.Date;
+import java.util.List;
 
 /**
  * Created by Administrator on 2018-08-21.
  */
 public class Goods {
-    private String goodsId;
+    private Long goodsId;
     @NotBlank
     private String goodsName;
     @Min(value = 10)
@@ -26,12 +29,22 @@ public class Goods {
     private int goodsNum;
     private int status;
     private Integer CommentCount;
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss",timezone ="GMT+8" )
+    private Date updateTime;
 
-    public String getGoodsId() {
+    public Date getUpdateTime() {
+        return updateTime;
+    }
+
+    public void setUpdateTime(Date updateTime) {
+        this.updateTime = updateTime;
+    }
+
+    public Long getGoodsId() {
         return goodsId;
     }
 
-    public void setGoodsId(String goodsId) {
+    public void setGoodsId(Long goodsId) {
         this.goodsId = goodsId;
     }
 
@@ -84,5 +97,13 @@ public class Goods {
         DateTimeFormatter dtf=DateTimeFormatter.ofPattern("yyyy-MM-dd HH:dd:ss");
         String format = LocalDateTime.now().plusDays(1).format(dtf);
         System.out.println(format);
+        String[] strings=new String[]{"a","b","a","c","e","c"};
+        boolean b = Arrays.stream(strings).anyMatch("c"::equals);
+        if (b){
+            System.out.println("相当");
+        }
+        List<String>  stringList=Arrays.asList("a","b","a","c","e","c");
+        stringList.stream().forEach(System.out::println);
     }
+
 }
