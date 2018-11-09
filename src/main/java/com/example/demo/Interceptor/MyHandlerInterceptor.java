@@ -27,5 +27,5 @@ public class MyHandlerInterceptor extends HandlerInterceptorAdapter {
         }
         return super.preHandle(request, response, handler);
     }
-    private static final String[] uris=new String[]{"/getSession"};
+    private static final String[] uris=new String[]{"/getSession","/testCommentsNew"};
 }

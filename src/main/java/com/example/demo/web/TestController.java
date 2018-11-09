@@ -1,18 +1,17 @@
 package com.example.demo.web;
 
 import com.example.demo.dao.GoodsDao;
-import com.example.demo.entity.Comment;
+import com.example.demo.entity.*;
 import com.example.demo.dao.GoodsOrderDao;
-import com.example.demo.entity.Goods;
-import com.example.demo.entity.Greeting;
-import com.example.demo.entity.HelloMessage;
 import com.example.demo.exception.DulplidateException;
 import com.example.demo.exception.OrderError;
 import com.example.demo.jedis.ApiResponse;
 import com.example.demo.jedis.RedisService;
+import com.example.demo.service.CommentNewService;
 import com.example.demo.service.CommentService;
 import com.example.demo.utils.FtpUtil;
 import com.example.demo.utils.PictureService;
+import com.example.demo.vo.CommentNewVo;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.pagehelper.Page;
@@ -83,6 +82,18 @@ public class TestController {
         }
         return commentService.select(informationId,id);
     }
+    @RequestMapping("/testCommentsNew")
+    @ResponseBody
+    public List<CommentNewVo> testCommentsNew(@RequestParam(value = "informationId",required = false,defaultValue = "0") int informationId, Integer parentId, Comment comment){
+        if(comment.getCreateDate()!=null) {
+            System.out.println(comment.getCreateDate().getTime());
+            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            System.out.println(simpleDateFormat.format(comment.getCreateDate()));
+        }
+        return commentNewService.select(informationId,parentId);
+    }
+    @Autowired
+    private CommentNewService commentNewService;
     @MessageMapping("/hello") //使用MessageMapping注解来标识所有发送到“/hello”这个destination的消息，都会被路由到这个方法进行处理.
     @SendTo("/topic/greetings") //使用SendTo注解来标识这个方法返回的结果，都会被发送到它指定的destination，“/topic/greetings”.
     //传入的参数HelloMessage为客户端发送过来的消息，是自动绑定的。

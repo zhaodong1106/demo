@@ -1,8 +1,9 @@
-package com.example.demo.service;
+package com.example.demo.dao;
 
 import com.example.demo.entity.Comment;
 import com.example.demo.entity.CommentNew;
 import com.example.demo.vo.CommentCountVO;
+import com.example.demo.vo.CommentNewVo;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
@@ -10,10 +11,10 @@ import java.util.List;
 /**
  * Created by Raytine on 2018/10/16.
  */
-public interface CommentService {
-    List<Comment> select(int informationId,int commentId);
-    int  insertComment(Comment commentNew);
-    Comment selectById(int id);
-    void updateStatus(int informationId);
+public interface ContentNewDao {
+    CommentNew selectById(int id);
+    List<CommentNewVo> selectByInformationId(@Param("informationId") int informationId, @Param("parentId") Integer parentId);
+    int  insertComment(CommentNew comment);
     List<CommentCountVO>selectCommentNumByItem(@Param("shardingTotalCount") int shardingTotalCount, @Param("shardingItem") int shardingItem);
+    void updateStatus(@Param("informationId") int informationId);
 }

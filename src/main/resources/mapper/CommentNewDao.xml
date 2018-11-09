@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.example.demo.dao.ContentNewDao">
+    <resultMap id="BaseResultMap" type="com.example.demo.vo.CommentNewVo">
+        <id column="id" property="id"  jdbcType="INTEGER"/>
+        <result column="information_id" property="informationId" jdbcType="INTEGER"/>
+        <result column="parent_id" property="parentId"  jdbcType="INTEGER"/>
+        <result column="reply_id" property="replyId"  jdbcType="INTEGER"/>
+        <result column="content" property="content"  jdbcType="VARCHAR"/>
+        <result column="create_date" property="createDate"  jdbcType="TIMESTAMP"/>
+        <association property="userVo" columnPrefix="u_" javaType="com.example.demo.vo.UserVo">
+            <id column="id" property="userId"></id>
+            <result column="name" property="userName"/>
+            <result column="email" property="email"/>
+            <result column="phone_number" property="phoneNumber"/>
+        </association>
+    </resultMap>
+    <resultMap id="BaseResultMap2" type="com.example.demo.vo.CommentCountVO">
+        <id column="information_id" property="goodsId" jdbcType="INTEGER"/>
+        <result column="num" property="num" jdbcType="INTEGER"/>
+    </resultMap>
+    <sql id="column">
+        cn.id,
+        cn.information_id,
+        cn.parent_id,
+        cn.reply_id,
+        cn.content,
+        cn.user_id,
+        cn.create_date,
+        u.id as u_id,
+        u.name as u_name,
+        u.phone_number as u_phone_number,
+        u.email as u_email
+    </sql>
+    <sql id="column2">
+       information_id,num
+    </sql>
+    <insert id="insertComment" parameterType="com.example.demo.entity.CommentNew">
+        insert into comment_new(information_id,parent_id,reply_id,content,user_id) VALUES (#{informationId},#{parentId},#{replyId},#{content},#{userId})
+    </insert>
+    <select id="selectById" resultMap="BaseResultMap" parameterType="java.lang.Integer">
+        select <include refid="column"/> from comment_new where id=#{id}
+    </select>
+    <select id="selectByInformationId"  resultMap="BaseResultMap">
+        select <include refid="column"/> from comment_new cn inner join user u
+        on cn.user_id=u.id
+        where cn.information_id=#{informationId}
+        <choose>
+            <when test="parentId!=null">
+                and cn.parent_id=#{parentId}
+            </when>
+            <otherwise>
+                and cn.parent_id=0 limit 0,2
+            </otherwise>
+        </choose>
+    </select>
+    <select id="selectAllByItem" parameterType="java.util.Map" resultMap="BaseResultMap">
+        select <include refid="column"/> from goods where status=0 and MOD(goods_Id, #{shardingTotalCount}) = #{shardingItem} Limit 0, 2
+    </select>
+    <select id="selectCommentNumByItem" resultMap="BaseResultMap2">
+        select information_id,COUNT(*) AS num FROM comment_new WHERE  status=0 and MOD(information_id, #{shardingTotalCount}) = #{shardingItem} GROUP BY information_id   Limit 0, 2
+    </select>
+    <update id="updateStatus">
+        update comment_new set status=1 where information_id=#{informationId}
+    </update>
+
+</mapper>
