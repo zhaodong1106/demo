@@ -25,6 +25,16 @@
                 return false;
             });
         });
+        $(function() {
+            $.ajax({
+                url:"testCommentsNew?informationId=2",
+                success:function (data) {
+                    console.log(data["commentNewVoMap"]["8"]);
+                    alert(data["commentNewVoMap"]["8"].userVo["userName"])
+                }
+            })
+
+        })
     </script>
 </head>
 <body>

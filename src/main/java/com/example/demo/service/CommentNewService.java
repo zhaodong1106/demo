@@ -7,12 +7,13 @@ import com.example.demo.vo.CommentNewVo;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by Raytine on 2018/10/16.
  */
 public interface CommentNewService {
-    List<CommentNewVo> select(int informationId, Integer commentId);
+    Map<String,Object> select(int informationId, Integer commentId);
     int  insertComment(CommentNew comment);
     CommentNew selectById(int id);
     void updateStatus(int informationId);

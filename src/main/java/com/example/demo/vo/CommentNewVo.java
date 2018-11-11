@@ -10,7 +10,7 @@ import java.util.List;
  * Created by Raytine on 2018/10/16.
  */
 public class CommentNewVo {
-    private int id;
+    private Integer id;
     private int informationId;
     private int parentId;
     private int replyId;
@@ -21,11 +21,11 @@ public class CommentNewVo {
     private Date createDate;
     private List<CommentNewVo> commentNews;
 
-    public int getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 

@@ -41,7 +41,29 @@
     <select id="selectById" resultMap="BaseResultMap" parameterType="java.lang.Integer">
         select <include refid="column"/> from comment_new where id=#{id}
     </select>
+    <select id="selectByIdForMap" resultMap="BaseResultMap" parameterType="java.util.List">
+        select <include refid="column"/> from comment_new
+        cn inner join user u
+        on cn.user_id=u.id
+        where cn.id in
+        <foreach collection="list" item="item" index="index" open="(" close=")" separator=",">
+            #{item}
+        </foreach>
+    </select>
     <select id="selectByInformationId"  resultMap="BaseResultMap">
+        select <include refid="column"/> from comment_new cn inner join user u
+        on cn.user_id=u.id
+        where cn.information_id=#{informationId}
+        <choose>
+            <when test="parentId!=null">
+                and cn.parent_id=#{parentId}
+            </when>
+            <otherwise>
+                and cn.parent_id=0 limit 0,2
+            </otherwise>
+        </choose>
+    </select>
+    <select id="selectByInformationIdForMap"  resultMap="BaseResultMap">
         select <include refid="column"/> from comment_new cn inner join user u
         on cn.user_id=u.id
         where cn.information_id=#{informationId}

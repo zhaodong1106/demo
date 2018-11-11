@@ -1,5 +1,6 @@
 package com.example.demo.web;
 
+import com.example.demo.dao.ContentNewDao;
 import com.example.demo.dao.GoodsDao;
 import com.example.demo.entity.*;
 import com.example.demo.dao.GoodsOrderDao;
@@ -84,7 +85,7 @@ public class TestController {
     }
     @RequestMapping("/testCommentsNew")
     @ResponseBody
-    public List<CommentNewVo> testCommentsNew(@RequestParam(value = "informationId",required = false,defaultValue = "0") int informationId, Integer parentId, Comment comment){
+    public Map<String,Object> testCommentsNew(@RequestParam(value = "informationId",required = false,defaultValue = "0") int informationId, Integer parentId, Comment comment){
         if(comment.getCreateDate()!=null) {
             System.out.println(comment.getCreateDate().getTime());
             SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
@@ -92,8 +93,20 @@ public class TestController {
         }
         return commentNewService.select(informationId,parentId);
     }
+    @RequestMapping("/testCommentsMap")
+    @ResponseBody
+    public Object testCommentsMap(@RequestParam(value = "informationId",required = false,defaultValue = "0") int informationId, Integer parentId, Comment comment){
+        if(comment.getCreateDate()!=null) {
+            System.out.println(comment.getCreateDate().getTime());
+            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            System.out.println(simpleDateFormat.format(comment.getCreateDate()));
+        }
+        return contentNewDao.selectByInformationIdForMap(informationId,parentId);
+    }
     @Autowired
     private CommentNewService commentNewService;
+    @Autowired
+    private ContentNewDao contentNewDao;
     @MessageMapping("/hello") //使用MessageMapping注解来标识所有发送到“/hello”这个destination的消息，都会被路由到这个方法进行处理.
     @SendTo("/topic/greetings") //使用SendTo注解来标识这个方法返回的结果，都会被发送到它指定的destination，“/topic/greetings”.
     //传入的参数HelloMessage为客户端发送过来的消息，是自动绑定的。

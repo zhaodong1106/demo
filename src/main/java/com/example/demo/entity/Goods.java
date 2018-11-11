@@ -12,9 +12,9 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 /**
  * Created by Administrator on 2018-08-21.
@@ -88,6 +88,31 @@ public class Goods {
         CommentCount = commentCount;
     }
 
+    @Override
+    public String toString() {
+        return "Goods{" +
+                "goodsId=" + goodsId +
+                ", goodsName='" + goodsName + '\'' +
+                ", goodsPrice=" + goodsPrice +
+                ", goodsNum=" + goodsNum +
+                ", status=" + status +
+                ", CommentCount=" + CommentCount +
+                ", updateTime=" + updateTime +
+                '}';
+    }
+
+    public Goods() {
+    }
+
+    public Goods(Long goodsId, @NotBlank String goodsName, @Min(value = 10) @Max(value = 99999999) BigDecimal goodsPrice, int goodsNum, int status, Integer commentCount) {
+        this.goodsId = goodsId;
+        this.goodsName = goodsName;
+        this.goodsPrice = goodsPrice;
+        this.goodsNum = goodsNum;
+        this.status = status;
+        CommentCount = commentCount;
+    }
+
     public static void main(String[] args){
         System.out.println(new BigDecimal("0.001").multiply(new BigDecimal("2")));
         int i=0;
@@ -97,6 +122,18 @@ public class Goods {
         DateTimeFormatter dtf=DateTimeFormatter.ofPattern("yyyy-MM-dd HH:dd:ss");
         String format = LocalDateTime.now().plusDays(1).format(dtf);
         System.out.println(format);
+        List<Goods> goodses=new ArrayList<>();
+        goodses.add(new Goods(111l,"zhao",new BigDecimal("22.22"),222,1, 22));
+        goodses.add(new Goods(222l,"dong",new BigDecimal("22.22"),222,1, 22));
+        goodses.add(new Goods(333l,"xi",new BigDecimal("22.22"),222,1, 22));
+        goodses.add(new Goods(444l,"nan",new BigDecimal("22.22"),222,1, 22));
+        for(Goods goods:goodses){
+            if("xi".equals(goods.getGoodsName())){
+                System.out.println("333");
+            }
+        }
+        Map<Long, Goods> goodsMap = goodses.stream().collect(Collectors.toMap(Goods::getGoodsId, Function.identity()));
+        goodsMap.entrySet().forEach(entry -> System.out.println("key:value = " + entry.getKey() + ":" + entry.getValue()));
         String[] strings=new String[]{"a","b","a","c","e","c"};
         boolean b = Arrays.stream(strings).anyMatch("c"::equals);
         if (b){
