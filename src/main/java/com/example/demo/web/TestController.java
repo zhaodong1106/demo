@@ -22,6 +22,7 @@ import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.FileCopyUtils;
 import org.springframework.util.ResourceUtils;
+import org.springframework.util.StringUtils;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -107,14 +108,17 @@ public class TestController {
             }
             if (commentId != null) {
                 CommentNew commentNew = commentNewService.selectById(commentId);
-                CommentNew commentNew1=new CommentNew();
-                commentNew1.setContent(content);
-                commentNew1.setInformationId(commentNew.getInformationId());
-                commentNew1.setParentId(commentNew.getParentId());
-                commentNew1.setReplyId(commentNew.getUserId());
-                commentNew1.setUserId(userId);
-                commentNewService.insertComment(commentNew1);
-                return "回复"+commentNew.getId()+"success";
+                if(commentNew!=null) {
+                    CommentNew commentNew1 = new CommentNew();
+                    commentNew1.setContent(content);
+                    commentNew1.setInformationId(commentNew.getInformationId());
+                    commentNew1.setParentId(commentNew.getParentId());
+                    commentNew1.setReplyId(commentNew.getUserId());
+                    commentNew1.setUserId(userId);
+                    commentNewService.insertComment(commentNew1);
+                    return "回复" + commentNew.getId() + "success";
+                }
+                return "需要回复的评论不存在";
             }
         }
         return "error";
