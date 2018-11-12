@@ -8,6 +8,8 @@ import com.example.demo.service.CommentNewService;
 import com.example.demo.service.CommentService;
 import com.example.demo.vo.CommentCountVO;
 import com.example.demo.vo.CommentNewVo;
+import com.example.demo.vo.CommentNewVo2;
+import com.example.demo.vo.CommentNewVoPrimary;
 import org.apache.commons.collections.map.HashedMap;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -66,5 +68,17 @@ public class CommentNewServiceImpl implements CommentNewService {
     @Override
     public List<CommentCountVO> selectCommentNumByItem(@Param("shardingTotalCount") int shardingTotalCount, @Param("shardingItem") int shardingItem) {
         return contentNewDao.selectCommentNumByItem(shardingTotalCount, shardingItem);
+    }
+
+    @Override
+    public List<CommentNewVoPrimary> select2(int informationId) {
+        List<CommentNewVoPrimary> comments1 = contentNewDao.selectByInformationIdPrimary(informationId);
+        for(CommentNewVoPrimary commentNewVo:comments1){
+            List<CommentNewVo2> commentNews = contentNewDao.selectByInformationId2(informationId,commentNewVo.getId());
+            if(commentNews.size()>0){
+                commentNewVo.setCommentNews(commentNews);
+            }
+        }
+        return  comments1;
     }
 }

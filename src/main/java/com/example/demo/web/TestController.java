@@ -93,6 +93,17 @@ public class TestController {
         }
         return commentNewService.select(informationId,parentId);
     }
+    @RequestMapping("/testCommentsNew2")
+    @ResponseBody
+    public Object testCommentsNew2(@RequestParam(value = "informationId",required = false,defaultValue = "0") int informationId, Integer parentId, Comment comment){
+        if(comment.getCreateDate()!=null) {
+            System.out.println(comment.getCreateDate().getTime());
+            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            System.out.println(simpleDateFormat.format(comment.getCreateDate()));
+        }
+        System.out.println("informationId:"+informationId);
+        return commentNewService.select2(informationId);
+    }
     @RequestMapping("/testCommentsMap")
     @ResponseBody
     public Object testCommentsMap(@RequestParam(value = "informationId",required = false,defaultValue = "0") int informationId, Integer parentId, Comment comment){
