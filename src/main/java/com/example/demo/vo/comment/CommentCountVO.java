@@ -1,4 +1,4 @@
-package com.example.demo.vo;
+package com.example.demo.vo.comment;
 
 /**
  * Created by T011689 on 2018/10/17.

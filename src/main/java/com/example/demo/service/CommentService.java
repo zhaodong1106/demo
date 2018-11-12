@@ -1,8 +1,7 @@
 package com.example.demo.service;
 
 import com.example.demo.entity.Comment;
-import com.example.demo.entity.CommentNew;
-import com.example.demo.vo.CommentCountVO;
+import com.example.demo.vo.comment.CommentCountVO;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;

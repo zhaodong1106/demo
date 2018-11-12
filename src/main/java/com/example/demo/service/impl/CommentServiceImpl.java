@@ -3,13 +3,12 @@ package com.example.demo.service.impl;
 import com.example.demo.dao.ContentDao;
 import com.example.demo.entity.Comment;
 import com.example.demo.service.CommentService;
-import com.example.demo.vo.CommentCountVO;
+import com.example.demo.vo.comment.CommentCountVO;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 /**

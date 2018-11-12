@@ -1,5 +1,6 @@
-package com.example.demo.vo;
+package com.example.demo.vo.comment;
 
+import com.example.demo.vo.UserVo;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import org.springframework.format.annotation.DateTimeFormat;
 

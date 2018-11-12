@@ -1,15 +1,12 @@
 package com.example.demo.service.impl;
 
-import com.example.demo.dao.ContentDao;
 import com.example.demo.dao.ContentNewDao;
-import com.example.demo.entity.Comment;
 import com.example.demo.entity.CommentNew;
 import com.example.demo.service.CommentNewService;
-import com.example.demo.service.CommentService;
-import com.example.demo.vo.CommentCountVO;
-import com.example.demo.vo.CommentNewVo;
-import com.example.demo.vo.CommentNewVo2;
-import com.example.demo.vo.CommentNewVoPrimary;
+import com.example.demo.vo.comment.CommentCountVO;
+import com.example.demo.vo.comment.CommentNewVo;
+import com.example.demo.vo.comment.CommentNewVo2;
+import com.example.demo.vo.comment.CommentNewVoPrimary;
 import org.apache.commons.collections.map.HashedMap;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.beans.factory.annotation.Autowired;

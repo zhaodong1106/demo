@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.example.demo.dao.ContentNewDao">
-    <resultMap id="BaseResultMapPrimary" type="com.example.demo.vo.CommentNewVoPrimary">
+    <resultMap id="BaseResultMapPrimary" type="com.example.demo.vo.comment.CommentNewVoPrimary">
         <id column="id" property="id"  jdbcType="INTEGER"/>
         <result column="information_id" property="informationId" jdbcType="INTEGER"/>
         <result column="parent_id" property="parentId"  jdbcType="INTEGER"/>
@@ -14,7 +14,7 @@
             <result column="phone_number" property="phoneNumber"/>
         </association>
     </resultMap>
-    <resultMap id="BaseResultMap" type="com.example.demo.vo.CommentNewVo">
+    <resultMap id="BaseResultMap" type="com.example.demo.vo.comment.CommentNewVo">
         <id column="id" property="id"  jdbcType="INTEGER"/>
         <result column="information_id" property="informationId" jdbcType="INTEGER"/>
         <result column="parent_id" property="parentId"  jdbcType="INTEGER"/>
@@ -28,7 +28,7 @@
             <result column="phone_number" property="phoneNumber"/>
         </association>
     </resultMap>
-    <resultMap id="BaseResultMap2" type="com.example.demo.vo.CommentNewVo2">
+    <resultMap id="BaseResultMap2" type="com.example.demo.vo.comment.CommentNewVo2">
         <id column="id" property="id"  jdbcType="INTEGER"/>
         <result column="information_id" property="informationId" jdbcType="INTEGER"/>
         <result column="parent_id" property="parentId"  jdbcType="INTEGER"/>

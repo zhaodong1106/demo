@@ -1,5 +1,6 @@
-package com.example.demo.vo;
+package com.example.demo.vo.comment;
 
+import com.example.demo.vo.UserVo;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import org.springframework.format.annotation.DateTimeFormat;
 
@@ -9,17 +10,16 @@ import java.util.List;
 /**
  * Created by Raytine on 2018/10/16.
  */
-public class CommentNewVo {
+public class CommentNewVoPrimary {
     private Integer id;
     private int informationId;
     private int parentId;
-    private int replyId;
     private String content;
     private UserVo userVo;
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss",timezone = "GMT+8")
     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private Date createDate;
-    private List<CommentNewVo> commentNews;
+    private List<CommentNewVo2> commentNews;
 
     public Integer getId() {
         return id;
@@ -35,14 +35,6 @@ public class CommentNewVo {
 
     public void setParentId(int parentId) {
         this.parentId = parentId;
-    }
-
-    public int getReplyId() {
-        return replyId;
-    }
-
-    public void setReplyId(int replyId) {
-        this.replyId = replyId;
     }
 
     public String getContent() {
@@ -69,11 +61,11 @@ public class CommentNewVo {
         this.informationId = informationId;
     }
 
-    public List<CommentNewVo> getCommentNews() {
+    public List<CommentNewVo2> getCommentNews() {
         return commentNews;
     }
 
-    public void setCommentNews(List<CommentNewVo> commentNews) {
+    public void setCommentNews(List<CommentNewVo2> commentNews) {
         this.commentNews = commentNews;
     }
 

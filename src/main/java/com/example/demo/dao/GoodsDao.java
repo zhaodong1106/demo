@@ -1,8 +1,7 @@
 package com.example.demo.dao;
 
 import com.example.demo.entity.Goods;
-import com.example.demo.vo.CommentCountVO;
-import org.apache.ibatis.annotations.Param;
+import com.example.demo.vo.comment.CommentCountVO;
 
 import java.util.List;
 import java.util.Map;

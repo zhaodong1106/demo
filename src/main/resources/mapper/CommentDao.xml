@@ -10,7 +10,7 @@
         <result column="user_id" property="userId"  jdbcType="INTEGER"/>
         <result column="create_date" property="createDate"  jdbcType="TIMESTAMP"/>
     </resultMap>
-    <resultMap id="BaseResultMap2" type="com.example.demo.vo.CommentCountVO">
+    <resultMap id="BaseResultMap2" type="com.example.demo.vo.comment.CommentCountVO">
         <id column="information_id" property="goodsId" jdbcType="INTEGER"/>
         <result column="num" property="num" jdbcType="INTEGER"/>
     </resultMap>
