@@ -91,6 +91,34 @@ public class TestController {
         System.out.println("informationId:"+informationId);
         return commentNewService.select2(informationId);
     }
+    @RequestMapping("/insertComments")
+    @ResponseBody
+    public Object testCommentsNew2(Integer informationId,Integer commentId,String content,Integer userId){
+        if(userId!=null&&content!=null&&content.trim()!="") {
+            if (informationId != null) {
+                CommentNew commentNew1=new CommentNew();
+                commentNew1.setUserId(userId);
+                commentNew1.setInformationId(informationId);
+                commentNew1.setParentId(0);
+                commentNew1.setReplyId(0);
+                commentNew1.setContent(content);
+                commentNewService.insertComment(commentNew1);
+                return "回复资讯success";
+            }
+            if (commentId != null) {
+                CommentNew commentNew = commentNewService.selectById(commentId);
+                CommentNew commentNew1=new CommentNew();
+                commentNew1.setContent(content);
+                commentNew1.setInformationId(commentNew.getInformationId());
+                commentNew1.setParentId(commentNew.getParentId());
+                commentNew1.setReplyId(commentNew.getUserId());
+                commentNew1.setUserId(userId);
+                commentNewService.insertComment(commentNew1);
+                return "回复"+commentNew.getId()+"success";
+            }
+        }
+        return "error";
+    }
     @RequestMapping("/testCommentsMap")
     @ResponseBody
     public Object testCommentsMap(@RequestParam(value = "informationId",required = false,defaultValue = "0") int informationId, Integer parentId, Comment comment){

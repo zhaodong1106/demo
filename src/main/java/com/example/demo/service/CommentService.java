@@ -12,7 +12,7 @@ import java.util.List;
 public interface CommentService {
     List<Comment> select(int informationId,int commentId);
     int  insertComment(Comment commentNew);
-    Comment selectById(int id);
+    Comment selectById(Integer id);
     void updateStatus(int informationId);
     List<CommentCountVO>selectCommentNumByItem(@Param("shardingTotalCount") int shardingTotalCount, @Param("shardingItem") int shardingItem);
 }

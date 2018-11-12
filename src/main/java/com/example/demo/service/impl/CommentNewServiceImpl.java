@@ -53,7 +53,7 @@ public class CommentNewServiceImpl implements CommentNewService {
     }
 
     @Override
-    public CommentNew selectById(int id) {
+    public CommentNew selectById(Integer id) {
         return contentNewDao.selectById(id);
     }
 

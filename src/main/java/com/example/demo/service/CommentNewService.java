@@ -14,7 +14,7 @@ import java.util.Map;
 public interface CommentNewService {
     Map<String,Object> select(int informationId, Integer commentId);
     int  insertComment(CommentNew comment);
-    CommentNew selectById(int id);
+    CommentNew selectById(Integer id);
     void updateStatus(int informationId);
     List<CommentCountVO>selectCommentNumByItem(@Param("shardingTotalCount") int shardingTotalCount, @Param("shardingItem") int shardingItem);
     List<CommentNewVoPrimary> select2(int informationId);

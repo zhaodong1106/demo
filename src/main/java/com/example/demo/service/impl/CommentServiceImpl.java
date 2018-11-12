@@ -45,7 +45,7 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
-    public Comment selectById(int id) {
+    public Comment selectById(Integer id) {
         return contentDao.selectById(id);
     }
 

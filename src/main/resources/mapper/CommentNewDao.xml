@@ -14,19 +14,14 @@
             <result column="phone_number" property="phoneNumber"/>
         </association>
     </resultMap>
-    <resultMap id="BaseResultMap" type="com.example.demo.vo.comment.CommentNewVo">
+    <resultMap id="BaseResultMap" type="com.example.demo.entity.CommentNew">
         <id column="id" property="id"  jdbcType="INTEGER"/>
         <result column="information_id" property="informationId" jdbcType="INTEGER"/>
         <result column="parent_id" property="parentId"  jdbcType="INTEGER"/>
         <result column="reply_id" property="replyId"  jdbcType="INTEGER"/>
         <result column="content" property="content"  jdbcType="VARCHAR"/>
         <result column="create_date" property="createDate"  jdbcType="TIMESTAMP"/>
-        <association property="userVo" columnPrefix="u_" javaType="com.example.demo.vo.UserVo">
-            <id column="id" property="userId"></id>
-            <result column="name" property="userName"/>
-            <result column="email" property="email"/>
-            <result column="phone_number" property="phoneNumber"/>
-        </association>
+        <result column="user_id" property="userId"/>
     </resultMap>
     <resultMap id="BaseResultMap2" type="com.example.demo.vo.comment.CommentNewVo2">
         <id column="id" property="id"  jdbcType="INTEGER"/>
@@ -85,16 +80,13 @@
         cn.content,
         cn.user_id,
         cn.create_date,
-        u.id as u_id,
-        u.name as u_name,
-        u.phone_number as u_phone_number,
-        u.email as u_email
+        cn.user_id
     </sql>
     <insert id="insertComment" parameterType="com.example.demo.entity.CommentNew">
         insert into comment_new(information_id,parent_id,reply_id,content,user_id) VALUES (#{informationId},#{parentId},#{replyId},#{content},#{userId})
     </insert>
     <select id="selectById" resultMap="BaseResultMap" parameterType="java.lang.Integer">
-        select <include refid="column"/> from comment_new where id=#{id}
+        select <include refid="column"/> from comment_new cn where cn.id=#{id}
     </select>
     <select id="selectByIdForMap" resultMap="BaseResultMap" parameterType="java.util.List">
         select <include refid="column"/> from comment_new

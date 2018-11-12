@@ -15,7 +15,7 @@ import java.util.Map;
  * Created by Raytine on 2018/10/16.
  */
 public interface ContentNewDao {
-    CommentNew selectById(int id);
+    CommentNew selectById(Integer id);
     List<CommentNewVoPrimary> selectByInformationIdPrimary(@Param("informationId") int informationId);
     List<CommentNewVo2> selectByInformationId2(@Param("informationId") int informationId, @Param("parentId") Integer parentId);
     List<CommentNewVo> selectByInformationId(@Param("informationId") int informationId, @Param("parentId") Integer parentId);
