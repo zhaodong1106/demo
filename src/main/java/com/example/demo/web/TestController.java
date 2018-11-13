@@ -1,42 +1,56 @@
 package com.example.demo.web;
 
+import com.example.demo.base.BaseResult;
 import com.example.demo.dao.ContentNewDao;
 import com.example.demo.dao.GoodsDao;
 import com.example.demo.entity.*;
 import com.example.demo.dao.GoodsOrderDao;
+import com.example.demo.exception.DulplidateException;
+import com.example.demo.exception.OrderError;
 import com.example.demo.jedis.ApiResponse;
 import com.example.demo.jedis.RedisService;
 import com.example.demo.service.CommentNewService;
 import com.example.demo.service.CommentService;
+import com.example.demo.utils.FtpUtil;
+import com.example.demo.utils.ImageUtils;
 import com.example.demo.utils.PictureService;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import org.apache.commons.collections.map.HashedMap;
+import org.apache.poi.hwpf.HWPFDocument;
 import org.apache.poi.xwpf.usermodel.XWPFDocument;
 import org.apache.poi.xwpf.usermodel.XWPFParagraph;
+import org.apache.tomcat.util.security.MD5Encoder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.FileCopyUtils;
 import org.springframework.util.ResourceUtils;
-import org.springframework.util.StringUtils;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 import org.springframework.web.servlet.view.RedirectView;
 import org.springframework.web.util.*;
 
+import javax.imageio.ImageIO;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 import java.io.*;
 import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
+import java.time.Instant;
 import java.util.*;
 
 /**
@@ -80,48 +94,6 @@ public class TestController {
             System.out.println(simpleDateFormat.format(comment.getCreateDate()));
         }
         return commentNewService.select(informationId,parentId);
-    }
-    @RequestMapping("/testCommentsNew2")
-    @ResponseBody
-    public Object testCommentsNew2(@RequestParam(value = "informationId",required = false,defaultValue = "0") int informationId, Integer parentId, Comment comment){
-        if(comment.getCreateDate()!=null) {
-            System.out.println(comment.getCreateDate().getTime());
-            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-            System.out.println(simpleDateFormat.format(comment.getCreateDate()));
-        }
-        System.out.println("informationId:"+informationId);
-        return commentNewService.select2(informationId);
-    }
-    @RequestMapping("/insertComments")
-    @ResponseBody
-    public Object testCommentsNew2(Integer informationId,Integer commentId,String content,Integer userId){
-        if(userId!=null&&content!=null&&content.trim()!="") {
-            if (informationId != null) {
-                CommentNew commentNew1=new CommentNew();
-                commentNew1.setUserId(userId);
-                commentNew1.setInformationId(informationId);
-                commentNew1.setParentId(0);
-                commentNew1.setReplyId(0);
-                commentNew1.setContent(content);
-                commentNewService.insertComment(commentNew1);
-                return "回复资讯success";
-            }
-            if (commentId != null) {
-                CommentNew commentNew = commentNewService.selectById(commentId);
-                if(commentNew!=null) {
-                    CommentNew commentNew1 = new CommentNew();
-                    commentNew1.setContent(content);
-                    commentNew1.setInformationId(commentNew.getInformationId());
-                    commentNew1.setParentId(commentNew.getParentId());
-                    commentNew1.setReplyId(commentNew.getUserId());
-                    commentNew1.setUserId(userId);
-                    commentNewService.insertComment(commentNew1);
-                    return "回复" + commentNew.getId() + "success";
-                }
-                return "需要回复的评论不存在";
-            }
-        }
-        return "error";
     }
     @RequestMapping("/testCommentsMap")
     @ResponseBody
@@ -340,9 +312,10 @@ public class TestController {
     }
     @RequestMapping("/testMultipartFile")
     @ResponseBody
-    public Object testMultipartFile(MultipartFile file){
-        Map<String, String> stringMap = pictureService.uploadPicture(file);
-        return stringMap;
+    public Object testMultipartFile(MultipartFile file,HttpServletRequest request){
+        BaseResult baseResult = ImageUtils.uploadFileAndCreateThumbnail(file,request);
+//        Map<String, String> stringMap = pictureService.uploadPicture(file);
+        return baseResult;
     }
 
     @Autowired
