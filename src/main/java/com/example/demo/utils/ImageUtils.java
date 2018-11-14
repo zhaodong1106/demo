@@ -57,7 +57,7 @@ public class ImageUtils {
         //获取服务器绝对路径 linux 服务器地址  获取当前使用的配置文件配置
         //String urlString=PropertiesUtil.getInstance().getSysPro("uploadPath");
         //拼接文件路劲
-        String filePathName = imageFilePath + File.separator + pathName;
+        String filePathName = imageFilePath + pathName;
         log.info("图片上传路径："+filePathName);
         //判断文件保存是否存在
         File file = new File(filePathName);
@@ -127,7 +127,7 @@ public class ImageUtils {
 
 
         //拼接文件路劲
-        String thumbnailFilePathName = imageFilePath + File.separator + thumbnailPathName;
+        String thumbnailFilePathName = imageFilePath + thumbnailPathName;
         try {
             //added by chenshun 2016-3-22 注释掉之前长宽的方式，改用大小
 //            Thumbnails.of(filePathName).size(width, height).toFile(thumbnailFilePathName);
@@ -144,7 +144,7 @@ public class ImageUtils {
          * 缩略图end
          */
 
-        Map<String, Object> map = new HashMap<String, Object>();
+        Map<String, Object> map = new HashMap();
         //原图地址
         map.put("originalUrl", pathName);
         //缩略图地址
