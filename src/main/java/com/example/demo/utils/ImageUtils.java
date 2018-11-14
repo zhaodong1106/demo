@@ -1,6 +1,8 @@
 package com.example.demo.utils;
 
 import com.example.demo.base.BaseResult;
+import com.fasterxml.jackson.databind.deser.std.UUIDDeserializer;
+import com.fasterxml.uuid.Generators;
 import net.coobird.thumbnailator.Thumbnails;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
@@ -17,8 +19,9 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.time.LocalDate;
+import java.time.*;
 import java.time.format.DateTimeFormatter;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
@@ -42,12 +45,16 @@ public class ImageUtils {
         {
             return new BaseResult(false, "文件不能大于10M");
         }
-        String uuid = UUID.randomUUID().toString();
-
+        String uuid = Generators.timeBasedGenerator().generate().toString();
+//        UUID uuid1 = UUID.fromString(uuid);
+//        long timeFromUUID = getTimeFromUUID(uuid1);
+//        Date date=new Date(timeFromUUID);
+//        System.out.println(date);
+//        String uuid = Generators.timeBasedGenerator().generate().toString();
         String fileDirectory = LocalDate.now().format(dtf);
 
         //拼接后台文件名称
-        String pathName = fileDirectory + File.separator + uuid + "."
+        String pathName = fileDirectory + File.separator + uuid+ "."
                 + FilenameUtils.getExtension(imageFile.getOriginalFilename());
 //        String pathUrl = fileDirectory + "/" + uuid + "."
 //                + FilenameUtils.getExtension(imageFile.getOriginalFilename());
@@ -150,5 +157,17 @@ public class ImageUtils {
         //缩略图地址
         map.put("thumbnailUrl", thumbnailPathName);
         return new BaseResult(true,map, "操作成功");
+    }
+    private  final long NUM_100NS_INTERVALS_SINCE_UUID_EPOCH = 0x01b21dd213814000L;
+    public  long getTimeFromUUID(UUID uuid) {
+        return (uuid.timestamp() - NUM_100NS_INTERVALS_SINCE_UUID_EPOCH) / 10000;
+    }
+    public static void main(String[] args){
+        String uuid="f0b6af23-e7d3-11e8-be46-d1467f366da8";
+        UUID uuid1 = UUID.fromString(uuid);
+        long timeFromUUID = new ImageUtils().getTimeFromUUID(uuid1);
+        Instant instant = Instant.ofEpochSecond(timeFromUUID);
+        LocalDateTime localDateTime = LocalDateTime.ofInstant(instant, ZoneId.systemDefault());
+        System.out.println(localDateTime.format(dtf));
     }
 }
