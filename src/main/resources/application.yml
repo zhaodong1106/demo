@@ -38,4 +38,9 @@ pagehelper:
   reasonable: true
   support-methods-arguments: false
   helper-dialect: mysql
+server:
+  servlet:
+    context-path: /demo
+web:
+  img-path: C:/images/
 

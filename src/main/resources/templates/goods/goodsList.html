@@ -4,6 +4,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta name="ctx" th:content="${#httpServletRequest.getContextPath()}" />
     <title>goods list</title>
     <script th:src="@{/js/jquery/jquery-3.3.1.min.js}"></script>
     <script th:src="@{/js/bootstrap.js}"></script>
@@ -207,8 +208,9 @@
             $("#form2").submit();
         });
         $("#btn").click(function () {
+//            var rootUrl=/*[[@{/}]]*/ '';
             $.ajax({
-                url:'/testGoods',
+                url:/*[[@{/testGoods}]]*/ '',
                 type:'get',
                 success:function (data) {
                     console.log(data);

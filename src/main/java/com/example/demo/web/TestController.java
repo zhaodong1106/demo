@@ -313,11 +313,12 @@ public class TestController {
     @RequestMapping("/testMultipartFile")
     @ResponseBody
     public Object testMultipartFile(MultipartFile file,HttpServletRequest request){
-        BaseResult baseResult = ImageUtils.uploadFileAndCreateThumbnail(file,request);
+        BaseResult baseResult = imageUtils.uploadFileAndCreateThumbnail(file,request);
 //        Map<String, String> stringMap = pictureService.uploadPicture(file);
         return baseResult;
     }
-
+    @Autowired
+    private ImageUtils imageUtils;
     @Autowired
     private GoodsDao goodsDao;
     @Autowired
