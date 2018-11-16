@@ -17,6 +17,10 @@ spring:
     suffix: .html
   profiles:
     active: dev
+  resources:
+    cache:
+      cachecontrol:
+        max-age: 60
 mybatis:
   mapper-locations: classpath:mapper/*.xml
 logging:
@@ -39,8 +43,10 @@ pagehelper:
   support-methods-arguments: false
   helper-dialect: mysql
 server:
-  servlet:
-    context-path: /demo
+  compression:
+    enabled: true
+    mime-types: text/html,text/xml,text/plain,text/css,text/javascript,application/javascript,application/json
+    min-response-size: 2048
 web:
   img-path: C:/images/
 
