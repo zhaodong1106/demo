@@ -35,8 +35,8 @@ public class MyWebMvcConfig extends WebMvcConfigurationSupport {
         registry.addResourceHandler("/upload/**").addResourceLocations("file:"+imageFile).setCacheControl(CacheControl.maxAge(60, TimeUnit.SECONDS));;
     }
 
-    @Bean
-    public ShallowEtagHeaderFilter hallowEtagHeaderFilter() {
-        return new ShallowEtagHeaderFilter();
-    }
+//    @Bean
+//    public ShallowEtagHeaderFilter hallowEtagHeaderFilter() {
+//        return new ShallowEtagHeaderFilter();
+//    }
 }
