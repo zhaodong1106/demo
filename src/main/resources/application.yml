@@ -21,6 +21,21 @@ spring:
     cache:
       cachecontrol:
         max-age: 60
+#  rabbitmq:
+#    addresses: 47.94.105.130
+#    username: admin
+#    password: P@ssw0rd
+#    virtual-host: /
+##    publisher-confirms: true
+##    publisher-returns: true
+##    template:
+##      mandatory: true
+#    listener:
+#      simple:
+#        acknowledge-mode: auto
+#        prefetch: 250
+#        concurrency: 4
+#        max-concurrency: 20
 mybatis:
   mapper-locations: classpath:mapper/*.xml
 logging:

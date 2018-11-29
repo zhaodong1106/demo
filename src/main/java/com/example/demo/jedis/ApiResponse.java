@@ -38,10 +38,10 @@ public class ApiResponse {
         this.data = data;
     }
 
-    public static ApiResponse ofSuccess(Object data){
+    public  static ApiResponse ofSuccess(Object data){
         return new ApiResponse(Status.SUCCESS.code,Status.SUCCESS.message,data);
     }
-    private enum Status {
+    private  enum Status {
         INVALID_REQUEST(400,"400 error"),INNER_SERVER_ERROR(500,"inner server error"),
         SUCCESS(200,"success");
         private int code;

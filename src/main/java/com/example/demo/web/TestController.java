@@ -19,11 +19,19 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiResponses;
 import org.apache.commons.collections.map.HashedMap;
 import org.apache.poi.hwpf.HWPFDocument;
 import org.apache.poi.xwpf.usermodel.XWPFDocument;
 import org.apache.poi.xwpf.usermodel.XWPFParagraph;
 import org.apache.tomcat.util.security.MD5Encoder;
+import org.springframework.amqp.AmqpException;
+import org.springframework.amqp.core.Message;
+import org.springframework.amqp.core.MessagePostProcessor;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.messaging.handler.annotation.MessageMapping;
@@ -51,15 +59,21 @@ import java.io.*;
 import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Created by Administrator on 2018-08-21.
  */
 @Controller
 public class TestController {
-    @RequestMapping("/testGoods")
+    @RequestMapping(value = "/api/testGoods",method = RequestMethod.GET)
     @ResponseBody
+    @ApiOperation(value = "测试商品")
+    @ApiImplicitParams({@ApiImplicitParam(paramType = "query",name = "pageNum",value = "页数",required = false,defaultValue = "0",dataType = "int"),
+                        @ApiImplicitParam(paramType = "query",name = "pageSize",value = "每页大小",required = false,defaultValue = "15",dataType = "int")})
     public PageInfo<Goods> testGoods(HttpServletRequest request,@RequestParam(value = "pageNum",required = false,defaultValue = "0")int pageNum, @RequestParam(value = "pageSize",required = false,defaultValue = "15") int pageSize){
         String sessionId = (String) WebUtils.getSessionAttribute(request,"name");
         System.out.println("sessionId:"+sessionId);
@@ -68,14 +82,14 @@ public class TestController {
         List<Goods> goodses = goodsDao.selectAll();
         return new PageInfo<Goods>(goodses);
     }
-    @RequestMapping("/selectByStudentId")
+    @RequestMapping(value = "/api/selectByStudentId",method = RequestMethod.GET)
     @ResponseBody
     public Object selectByStudentId(@RequestParam(value="studentId",required = false,defaultValue = "133") int studentId){
         return goodsOrderDao.selectByStudentId(studentId);
     }
     @Autowired
     private GoodsOrderDao goodsOrderDao;
-    @RequestMapping("/testComments")
+    @RequestMapping(value = "/api/testComments",method = RequestMethod.GET)
     @ResponseBody
     public List<Comment> testComments(@RequestParam(value = "informationId",required = false,defaultValue = "0") int informationId, Integer id, Comment comment){
         if(comment.getCreateDate()!=null) {
@@ -85,7 +99,7 @@ public class TestController {
         }
         return commentService.select(informationId,id);
     }
-    @RequestMapping("/testCommentsNew")
+    @RequestMapping(value = "/api/testCommentsNew",method = RequestMethod.GET)
     @ResponseBody
     public Object testCommentsNew(@RequestParam(value = "informationId",required = false,defaultValue = "0") int informationId, Integer parentId, Comment comment){
         if(comment.getCreateDate()!=null) {
@@ -95,7 +109,7 @@ public class TestController {
         }
         return commentNewService.select2(informationId);
     }
-    @RequestMapping("/testCommentsMap")
+    @RequestMapping(value = "/api/testCommentsMap",method = RequestMethod.GET)
     @ResponseBody
     public Object testCommentsMap(@RequestParam(value = "informationId",required = false,defaultValue = "0") int informationId, Integer parentId, Comment comment){
         if(comment.getCreateDate()!=null) {
@@ -132,7 +146,7 @@ public class TestController {
 //    }
     @Autowired
     private SimpMessagingTemplate template;
-    @RequestMapping("/insertComment")
+    @RequestMapping(value = "/api/insertComment",method = RequestMethod.GET)
     @ResponseBody
     public Object insertComment(@RequestParam(value = "parentId",required = false,defaultValue = "0") int parentId,String contentText){
         if(contentText==null||"".equals(contentText.trim())){
@@ -163,13 +177,13 @@ public class TestController {
     }
     @Autowired
     private CommentService commentService;
-    @RequestMapping(value = "/getSession")
+    @RequestMapping(value = "/api/getSession",method = RequestMethod.GET)
     @ResponseBody
     public Object queryGoods(HttpServletRequest request){
         WebUtils.setSessionAttribute(request,"name","zhao");
         return "sucess";
     }
-    @RequestMapping("/insertGoodsOrder")
+    @RequestMapping(value = "/api/insertGoodsOrder",method = RequestMethod.GET)
     @ResponseBody
     public Object insertGoodsOrder(){
         for(int i=21;i<500;i++) {
@@ -195,7 +209,7 @@ public class TestController {
 //        WebUtils.setSessionAttribute(request,"name","zhaodong");
         return new ModelAndView("index").addObject("goods",new Goods());
     }
-    @RequestMapping("/testResourceUtils")
+    @RequestMapping(value = "/api/testResourceUtils",method = RequestMethod.GET)
     @ResponseBody
     public Object testResourceUtils(){
         try {
@@ -223,7 +237,7 @@ public class TestController {
 //    }
     @Autowired
     private ObjectMapper objectMapper;
-    @RequestMapping("/testCookie")
+    @RequestMapping(value = "/api/testCookie",method = RequestMethod.GET)
     @ResponseBody
     public Object testCookie(@CookieValue(value = "userName",required = false) String userNameForCookie, @CookieValue(value = "userPassword",required = false) String userPasswordForCookie, HttpServletResponse response){
 
@@ -240,7 +254,7 @@ public class TestController {
         response.addCookie(cookieValue2);
         return ApiResponse.ofSuccess(1);
     }
-    @RequestMapping("/getIdGenerator")
+    @RequestMapping(value = "/api/getIdGenerator",method = RequestMethod.GET)
     @ResponseBody
     public Object getIdGenerator(String date,String count){
         return redisService.evalId(date,count);
@@ -257,7 +271,7 @@ public class TestController {
         PageHelper.startPage(1,pageNo);
         List<Goods> goodses = goodsDao.selectAll();
         int index=1;
-        return new ModelAndView("goods/goodsList").addObject("str",123456).addObject("name","zhaodong").addObject("goods",new Goods()).addObject("goodsList",goodses).addObject("index",index);
+        return new ModelAndView("goods/goodsList").addObject("str",123456).addObject("name","zhaodong").addObject("goodsList",goodses).addObject("index",index);
     }
     @RequestMapping("/add")
     public ModelAndView add(@Valid Goods goods,BindingResult bindingResult){
@@ -283,7 +297,7 @@ public class TestController {
         }
         return new ModelAndView(new RedirectView("/goodsList"));
     }
-    @RequestMapping("/testPoi")
+    @RequestMapping(value = "/api/testPoi",method = RequestMethod.GET)
     @ResponseBody
     public Object testPoi(){
         InputStream inputStream= null;
@@ -310,13 +324,70 @@ public class TestController {
 
         return null;
     }
-    @RequestMapping("/testMultipartFile")
+    @RequestMapping(value = "/api/testMultipartFile",method = RequestMethod.POST)
     @ResponseBody
     public Object testMultipartFile(MultipartFile file,HttpServletRequest request){
         BaseResult baseResult = imageUtils.uploadFileAndCreateThumbnail(file,request);
 //        Map<String, String> stringMap = pictureService.uploadPicture(file);
         return baseResult;
     }
+    @RequestMapping(value = "/testApiresponse",method = RequestMethod.GET)
+    @ResponseBody
+    public Object testApiresponse(){
+        ApiResponse apiResponse = ApiResponse.ofSuccess("dsadas");
+//        Map<String, String> stringMap = pictureService.uploadPicture(file);
+        return apiResponse;
+    }
+    @RequestMapping(value = "/api/testSend",method = RequestMethod.GET)
+    @ResponseBody
+    public Object testSend() throws InterruptedException {
+        long start=System.currentTimeMillis();
+        rabbitTemplate.convertAndSend("topicExchange", "key.1","dasdasdddddddddddddddddddddddddddddddddddddddddd");
+        long end=System.currentTimeMillis();
+        System.out.println("程序运行时间： " + (end - start)/1000 + "s");
+        ApiResponse apiResponse = ApiResponse.ofSuccess("dsadas");
+//        Map<String, String> stringMap = pictureService.uploadPicture(file);
+        return apiResponse;
+    }
+    @RequestMapping(value = "/api/testSendDTL",method = RequestMethod.GET)
+    @ResponseBody
+    public Object testSendDTL() throws InterruptedException {
+        long start=System.currentTimeMillis();
+        rabbitTemplate.convertAndSend("orderDelayExchange", "orderDelayExchange.key","dasdasdddddddddddddddddddddddddddddddddddddddddd");
+        long end=System.currentTimeMillis();
+        System.out.println("程序运行时间： " + (end - start)/1000 + "s");
+        ApiResponse apiResponse = ApiResponse.ofSuccess("dsadas");
+//        Map<String, String> stringMap = pictureService.uploadPicture(file);
+        return apiResponse;
+    }
+    private static final DateTimeFormatter dtf=DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+//    @RequestMapping("/api/testSendDTL2")
+//    @ResponseBody
+//    public Object testSendDTL2() throws InterruptedException {
+////        SimpleDateFormat sf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+//        System.out.println("发送时间：" + LocalDateTime.now().format(dtf));
+//        String msg="dasddddddddddddd";
+//        rabbitTemplate.convertAndSend(RabbitConfig.EXCHANGE_NAME, RabbitConfig.QUEUE_NAME, msg, new MessagePostProcessor() {
+//            @Override
+//            public Message postProcessMessage(Message message) throws AmqpException {
+//                message.getMessageProperties().setHeader("x-delay", 18000);
+//                return message;
+//            }
+//        });
+//        ApiResponse apiResponse = ApiResponse.ofSuccess("dsadas");
+////        Map<String, String> stringMap = pictureService.uploadPicture(file);
+//        if(params.containsKey("sendCount")) {
+//            params.put("sendCount", params.get("sendCount") + 1);
+//        }else {
+//            params.put("sendCount",1);
+//        }
+//        System.out.println("sendCount:"+params.get("sendCount"));
+//        return apiResponse;
+//    }
+    private static final ConcurrentHashMap<String,Integer>  params=new ConcurrentHashMap<>();
+
+    @Autowired(required = false)
+    private RabbitTemplate rabbitTemplate;
     @Autowired
     private ImageUtils imageUtils;
     @Autowired

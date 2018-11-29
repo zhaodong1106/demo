@@ -57,35 +57,15 @@
             <th>商品数量</th>
         </tr>
         </thead>
-        <!--<tr  th:each="goods:${goodsList}">-->
-        <!--<tr id="data">-->
-            <!--<td th:text="${goodsStat.count+index}">1</td>-->
-            <!--<td th:text="${goods.goodsName}">大西瓜</td>-->
-            <!--<td th:text="${goods.goodsPrice}">13.5元</td>-->
-            <!--<td th:text="${goods.goodsNum}">11个</td>-->
-        <!--</tr>-->
+        <tr id="data" th:each="goods:${goodsList}">
+            <td th:text="${index}">1</td>
+            <td th:text="${goods.goodsName}">大西瓜</td>
+            <td th:text="${goods.goodsPrice}">13.5元</td>
+            <td th:text="${goods.goodsNum}">11个</td>
+        </tr>
     </table>
     <br>
-        <form class="layui-form" th:action="@{/add}" method="post" th:object="${goods}">
-          <div class="layui-form-item">
-              <label class="layui-form-label" th:for="*{goodsName}">商品名称</label>
-              <div class="layui-form-block">
-                    <input class="layui-input" th:field="*{goodsName}">
-              </div>
-          </div>
-            <div class="layui-form-item">
-                <label class="layui-form-label" th:for="*{goodsPrice}">商品价格</label>
-                <div class="layui-form-block">
-                    <input class="layui-input" th:field="*{goodsPrice}">
-                </div>
-            </div>
-            <div class="layui-form-item">
-                <div class="layui-input-block">
-                    <button class="layui-btn" lay-submit lay-filter="formDemo">立即提交</button>
-                    <button type="reset" class="layui-btn layui-btn-primary">重置</button>
-                </div>
-            </div>
-        </form>
+
 
     <form class="layui-form" action="">
         <div class="layui-form-item">

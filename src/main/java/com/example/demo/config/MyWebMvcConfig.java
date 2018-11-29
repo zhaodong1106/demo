@@ -31,8 +31,12 @@ public class MyWebMvcConfig extends WebMvcConfigurationSupport {
     private String imageFile;
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
-        registry.addResourceHandler("/**").addResourceLocations("classpath:/static/").setCacheControl(CacheControl.maxAge(60, TimeUnit.SECONDS));
-        registry.addResourceHandler("/upload/**").addResourceLocations("file:"+imageFile).setCacheControl(CacheControl.maxAge(60, TimeUnit.SECONDS));;
+        registry.addResourceHandler("/**").addResourceLocations("classpath:/static/").setCacheControl(CacheControl.maxAge(60, TimeUnit.MINUTES));
+        registry.addResourceHandler("/upload/**").addResourceLocations("file:"+imageFile).setCacheControl(CacheControl.maxAge(60, TimeUnit.MINUTES));
+        registry.addResourceHandler("swagger-ui.html")
+                .addResourceLocations("classpath:/META-INF/resources/").setCacheControl(CacheControl.maxAge(60,TimeUnit.MINUTES));
+        registry.addResourceHandler("/webjars/**")
+                .addResourceLocations("classpath:/META-INF/resources/webjars/").setCacheControl(CacheControl.maxAge(60,TimeUnit.MINUTES));
     }
 
 //    @Bean
