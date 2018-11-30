@@ -23,6 +23,7 @@ import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponses;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.map.HashedMap;
 import org.apache.poi.hwpf.HWPFDocument;
 import org.apache.poi.xwpf.usermodel.XWPFDocument;
@@ -68,6 +69,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * Created by Administrator on 2018-08-21.
  */
 @Controller
+@Slf4j
 public class TestController {
     @RequestMapping(value = "/api/testGoods",method = RequestMethod.GET)
     @ResponseBody
@@ -77,7 +79,7 @@ public class TestController {
     public PageInfo<Goods> testGoods(HttpServletRequest request,@RequestParam(value = "pageNum",required = false,defaultValue = "0")int pageNum, @RequestParam(value = "pageSize",required = false,defaultValue = "15") int pageSize){
         String sessionId = (String) WebUtils.getSessionAttribute(request,"name");
         System.out.println("sessionId:"+sessionId);
-
+        log.info("");
         PageHelper.startPage(pageNum,pageSize);
         List<Goods> goodses = goodsDao.selectAll();
         return new PageInfo<Goods>(goodses);
@@ -384,7 +386,16 @@ public class TestController {
 //        System.out.println("sendCount:"+params.get("sendCount"));
 //        return apiResponse;
 //    }
+    @RequestMapping("/testStatic")
+    @ResponseBody
+    public Object testStatic(){
+        count++;
+        System.out.println(count);
+        return count;
+    }
+    private   Integer count=1;
     private static final ConcurrentHashMap<String,Integer>  params=new ConcurrentHashMap<>();
+
 
     @Autowired(required = false)
     private RabbitTemplate rabbitTemplate;
