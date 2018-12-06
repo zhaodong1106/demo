@@ -1,0 +1,16 @@
+spring:
+  thymeleaf:
+    cache: true
+server:
+  port: 8085
+redis:
+      poolMaxIdle: 500
+      poolMaxTotal: 1000
+swagger:
+    swaggerSwitch: true
+#logging:
+#  file:
+#    max-history: 2
+#    max-size: 10MB
+#  path: c:/Users/T011689/prod
+#  pattern: ${LOG_PATH}.%d{yyyy-MM-dd}.log

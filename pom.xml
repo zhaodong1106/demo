@@ -23,6 +23,8 @@
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 		<java.version>1.8</java.version>
 		<elastic-job.version>2.1.5</elastic-job.version>
+		<maven.compiler.target>1.8</maven.compiler.target>
+		<maevn.compiler.source>1.8</maevn.compiler.source>
 	</properties>
 
 	<dependencies>

@@ -265,6 +265,7 @@ public class TestController {
     private RedisService redisService;
     @RequestMapping("/goodsList")
     public ModelAndView goodsList(HttpServletRequest request,Integer pageNo){
+        log.debug("进入goodsLsit");
         String sessionId = WebUtils.getSessionId(request);
         System.out.println("sessionId:"+sessionId);
         if(pageNo==null){
