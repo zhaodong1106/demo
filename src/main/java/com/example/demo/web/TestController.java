@@ -5,6 +5,7 @@ import com.example.demo.dao.ContentNewDao;
 import com.example.demo.dao.GoodsDao;
 import com.example.demo.entity.*;
 import com.example.demo.dao.GoodsOrderDao;
+import com.example.demo.enums.Status;
 import com.example.demo.exception.DulplidateException;
 import com.example.demo.exception.OrderError;
 import com.example.demo.jedis.ApiResponse;
@@ -22,7 +23,6 @@ import com.github.pagehelper.PageInfo;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiResponses;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.map.HashedMap;
 import org.apache.poi.hwpf.HWPFDocument;
@@ -64,6 +64,8 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
+
+import static com.example.demo.jedis.ApiResponse.*;
 
 /**
  * Created by Administrator on 2018-08-21.
@@ -334,10 +336,15 @@ public class TestController {
 //        Map<String, String> stringMap = pictureService.uploadPicture(file);
         return baseResult;
     }
+    @RequestMapping("/testNotLogin")
+    @ResponseBody
+    public ApiResponse testNotLogin(){
+        return ApiResponse.ofStatus(Status.NOT_LOGIN);
+    }
     @RequestMapping(value = "/testApiresponse",method = RequestMethod.GET)
     @ResponseBody
     public Object testApiresponse(){
-        ApiResponse apiResponse = ApiResponse.ofSuccess("dsadas");
+        ApiResponse apiResponse = ofSuccess("dsadas");
 //        Map<String, String> stringMap = pictureService.uploadPicture(file);
         return apiResponse;
     }
@@ -348,7 +355,7 @@ public class TestController {
         rabbitTemplate.convertAndSend("topicExchange", "key.1","dasdasdddddddddddddddddddddddddddddddddddddddddd");
         long end=System.currentTimeMillis();
         System.out.println("程序运行时间： " + (end - start)/1000 + "s");
-        ApiResponse apiResponse = ApiResponse.ofSuccess("dsadas");
+        ApiResponse apiResponse = ofSuccess("dsadas");
 //        Map<String, String> stringMap = pictureService.uploadPicture(file);
         return apiResponse;
     }
@@ -359,7 +366,7 @@ public class TestController {
         rabbitTemplate.convertAndSend("orderDelayExchange", "orderDelayExchange.key","dasdasdddddddddddddddddddddddddddddddddddddddddd");
         long end=System.currentTimeMillis();
         System.out.println("程序运行时间： " + (end - start)/1000 + "s");
-        ApiResponse apiResponse = ApiResponse.ofSuccess("dsadas");
+        ApiResponse apiResponse = ofSuccess("dsadas");
 //        Map<String, String> stringMap = pictureService.uploadPicture(file);
         return apiResponse;
     }

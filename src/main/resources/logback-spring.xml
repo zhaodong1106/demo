@@ -12,7 +12,7 @@
     <!--生产环境:打印控制台和输出到文件-->
     <springProfile name="prod">
         <!--&lt;!&ndash;定义日志文件的存储地址 勿在 LogBack 的配置中使用相对路径&ndash;&gt;-->
-        <property name="LOG_PATH" value="/root/logs/demo"/>
+        <property name="LOG_PATH" value="l:/root/logs/demo"/>
         <!--写入日志到文件的appender-->
         <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
