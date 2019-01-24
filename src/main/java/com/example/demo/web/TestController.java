@@ -206,7 +206,6 @@ public class TestController {
     @RequestMapping(value = "/api/getSession",method = RequestMethod.GET)
     @ResponseBody
     public Object queryGoods(HttpServletRequest request){
-        request.getRequestURI()
         WebUtils.setSessionAttribute(request,"name","zhao");
         return "sucess";
     }
