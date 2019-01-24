@@ -33,7 +33,7 @@ public class RedisService {
 
 
 	public RedisService(){
-		System.out.println("进入默认构造方法");
+		System.out.println("进入默认构造方法1111111111111");
 		StringBuilder sb = new StringBuilder();
 		try(InputStream stream = getClass().getClassLoader().getResourceAsStream("luaScripts/xianliu.lua");
 			BufferedReader br = new BufferedReader(new InputStreamReader(stream))

@@ -6,12 +6,13 @@
         <result column="goods_name" property="goodsName" jdbcType="VARCHAR"/>
         <result column="goods_price" property="goodsPrice"  jdbcType="DECIMAL"/>
         <result column="goods_num" property="goodsNum"  jdbcType="INTEGER"/>
+        <result column="update_time" property="updateTime" />
     </resultMap>
     <sql id="column">
-        goods_id,goods_name,goods_price,goods_num
+        goods_id,goods_name,goods_price,goods_num,update_time
     </sql>
     <select id="selectAll" resultMap="BaseResultMap">
-        select <include refid="column"/> from goods
+        select <include refid="column"/> from goods order by goods_id
     </select>
     <insert id="insertSelective" parameterType="com.example.demo.entity.Goods">
         insert into goods
@@ -26,7 +27,10 @@
                 goods_num,
             </if>
             <if test="status!=null">
-                status
+                status,
+            </if>
+            <if test="updateTime!=null">
+                update_time
             </if>
         </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
@@ -40,10 +44,16 @@
                 #{goodsNum},
             </if>
             <if test="status!=null">
-                #{status}
+                #{status},
+            </if>
+            <if test="updateTime">
+                #{updateTime}
             </if>
         </trim>
     </insert>
+    <update id="updateGoods">
+        update goods set goods_name=#{goodsName},update_time=sysdate where goods_id=#{goodsId}
+    </update>
     <update id="updateStatus" parameterType="java.util.List">
         update goods set status=1 where goods_id IN
         <foreach collection="list" item="item" index="index" separator="," open="(" close=")">

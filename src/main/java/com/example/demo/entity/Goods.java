@@ -1,7 +1,12 @@
 package com.example.demo.entity;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.google.common.hash.BloomFilter;
+import com.google.common.hash.Funnel;
+import com.google.common.hash.Funnels;
+import io.swagger.models.auth.In;
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.format.datetime.DateFormatter;
 
 import javax.validation.constraints.Max;
@@ -27,16 +32,16 @@ public class Goods {
     @Max(value=99999999)
     private BigDecimal goodsPrice;
     private int goodsNum;
-    private int status;
+    private Integer status;
     private Integer CommentCount;
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss",timezone ="GMT+8" )
-    private Date updateTime;
+    private LocalDateTime updateTime;
 
-    public Date getUpdateTime() {
+    public LocalDateTime getUpdateTime() {
         return updateTime;
     }
 
-    public void setUpdateTime(Date updateTime) {
+    public void setUpdateTime(LocalDateTime updateTime) {
         this.updateTime = updateTime;
     }
 
@@ -72,11 +77,11 @@ public class Goods {
         this.goodsNum = goodsNum;
     }
 
-    public int getStatus() {
+    public Integer getStatus() {
         return status;
     }
 
-    public void setStatus(int status) {
+    public void setStatus(Integer status) {
         this.status = status;
     }
 
@@ -114,33 +119,60 @@ public class Goods {
     }
 
     public static void main(String[] args){
-        System.out.println(new BigDecimal("0.001").multiply(new BigDecimal("2")));
-        int i=0;
-        System.out.println("i++:"+(i++));
-        int j=0;
-        System.out.println("++j:"+(++j));
-        DateTimeFormatter dtf=DateTimeFormatter.ofPattern("yyyy-MM-dd HH:dd:ss");
-        String format = LocalDateTime.now().plusDays(1).format(dtf);
-        System.out.println(format);
-        List<Goods> goodses=new ArrayList<>();
-        goodses.add(new Goods(111l,"zhao",new BigDecimal("22.22"),222,1, 22));
-        goodses.add(new Goods(222l,"dong",new BigDecimal("22.22"),222,1, 22));
-        goodses.add(new Goods(333l,"xi",new BigDecimal("22.22"),222,1, 22));
-        goodses.add(new Goods(444l,"nan",new BigDecimal("22.22"),222,1, 22));
-        for(Goods goods:goodses){
-            if("xi".equals(goods.getGoodsName())){
-                System.out.println("333");
-            }
+        BloomFilter<Integer> bloomFilter=BloomFilter.create(Funnels.integerFunnel(),100000);
+        for(int i=0;i<100;i++) {
+            bloomFilter.put(i);
         }
-        Map<Long, Goods> goodsMap = goodses.stream().collect(Collectors.toMap(Goods::getGoodsId, Function.identity()));
-        goodsMap.entrySet().forEach(entry -> System.out.println("key:value = " + entry.getKey() + ":" + entry.getValue()));
-        String[] strings=new String[]{"a","b","a","c","e","c"};
-        boolean b = Arrays.stream(strings).anyMatch("c"::equals);
-        if (b){
-            System.out.println("相当");
+        if(bloomFilter.mightContain(33333)){
+            System.out.println(33333);
         }
-        List<String>  stringList=Arrays.asList("a","b","a","c","e","c");
-        stringList.stream().forEach(System.out::println);
+        String newStr = substring("1", 1, 4);//长度不够前面加0 等于 0ABC 截取 1，4  所得 ABC
+        System.out.println(newStr);
+
+    }
+    private static  String substringLast(String str, int subLen){
+        int leng = 0;
+        if(StringUtils.isNotBlank(str)){
+            leng = str.length();
+        }
+        if(leng < subLen){
+            return append(str, leng, subLen);
+        }else{
+            return str.substring(leng - subLen);
+        }
+    }
+    /**
+     * 截取 字符串，不够以0 补充
+     *
+     * @param str
+     *            字符串
+     * @param start
+     *            截取开始位置(包含)
+     * @param end
+     *            截取结束位置(不包含)
+     * @return
+     */
+    private static String substring(String str, int start, int end) {
+        int len = 0;
+        if (StringUtils.isNotBlank(str)) {
+            len = str.length();
+        }
+
+        if (len < end) {// 长度不够，补充 0
+            return append(str, len, end).substring(start, end);
+        } else {
+            return str.substring(start, end);
+        }
+
+    }
+
+    private static String append(String str, int start, int end) {
+        StringBuilder sb = new StringBuilder();
+        for (int i = start; i < end; i++) {
+            sb.append("0");
+        }
+        sb.append(str);
+        return sb.toString();
     }
 
 }

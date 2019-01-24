@@ -86,7 +86,17 @@ public class Emp {
         return jobDate;
     }
 
+    public Emp(Integer empno, String ename) {
+        this.empno = empno;
+        this.ename = ename;
+    }
+
+    public Emp() {
+    }
+
     public void setJobDate(Date jobDate) {
         this.jobDate = jobDate;
+
     }
+
 }

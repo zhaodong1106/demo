@@ -3,6 +3,13 @@ spring:
     cache: true
 server:
   port: 8085
+  tomcat:
+    accept-count: 500
+    max-threads: 500
+    min-spare-threads: 300
+  compression:
+    enabled: true
+    mime-types: text/html,text/xml,text/javascript,text/css,text/plain,application/json
 redis:
       poolMaxIdle: 500
       poolMaxTotal: 1000

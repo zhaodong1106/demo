@@ -20,6 +20,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import com.google.common.hash.BloomFilter;
+import com.google.common.hash.Funnel;
+import com.google.common.hash.Funnels;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
@@ -50,6 +53,7 @@ import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 import org.springframework.web.servlet.view.RedirectView;
 import org.springframework.web.util.*;
 
+import javax.annotation.Resource;
 import javax.imageio.ImageIO;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
@@ -58,6 +62,7 @@ import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 import java.io.*;
 import java.math.BigDecimal;
+import java.nio.file.Files;
 import java.text.SimpleDateFormat;
 import java.time.Instant;
 import java.time.LocalDateTime;
@@ -91,6 +96,23 @@ public class TestController {
     public Object selectByStudentId(@RequestParam(value="studentId",required = false,defaultValue = "133") int studentId){
         return goodsOrderDao.selectByStudentId(studentId);
     }
+    @RequestMapping("/testHeapLeak")
+    @ResponseBody
+    public Object testHeapLeak(){
+        int i=0;
+        while (true){
+            emps.add(new Emp(i++, UUID.randomUUID().toString()));
+        }
+    }
+    private static final String[] urls=new String[]{"dasd","Dasd"};
+    private List<Emp> emps=new ArrayList<>();
+
+    @RequestMapping("/testBoolFilter")
+    @ResponseBody
+    public Object  testBoolFilter(){
+        return null;
+    }
+
     @Autowired
     private GoodsOrderDao goodsOrderDao;
     @RequestMapping(value = "/api/testComments",method = RequestMethod.GET)
@@ -184,6 +206,7 @@ public class TestController {
     @RequestMapping(value = "/api/getSession",method = RequestMethod.GET)
     @ResponseBody
     public Object queryGoods(HttpServletRequest request){
+        request.getRequestURI()
         WebUtils.setSessionAttribute(request,"name","zhao");
         return "sucess";
     }
@@ -266,17 +289,34 @@ public class TestController {
     @Autowired
     private RedisService redisService;
     @RequestMapping("/goodsList")
-    public ModelAndView goodsList(HttpServletRequest request,Integer pageNo){
+    public ModelAndView goodsList(HttpServletRequest request,@RequestParam(value = "pageNo",required = false,defaultValue = "1") int pageNo
+    ,@RequestParam(value="pageSize",required = false,defaultValue = "2") int pageSize
+    ){
         log.debug("进入goodsLsit");
         String sessionId = WebUtils.getSessionId(request);
         System.out.println("sessionId:"+sessionId);
-        if(pageNo==null){
-            pageNo=15;
-        }
-        PageHelper.startPage(1,pageNo);
+        PageHelper.startPage(pageNo,pageSize);
         List<Goods> goodses = goodsDao.selectAll();
         int index=1;
         return new ModelAndView("goods/goodsList").addObject("str",123456).addObject("name","zhaodong").addObject("goodsList",goodses).addObject("index",index);
+    }
+    @RequestMapping("/updateOracle")
+    @ResponseBody
+    public Object updateOracle(String goodsName,Integer goodsId){
+        Integer count = goodsDao.updateGoods(goodsName, goodsId);
+        return  count;
+    }
+    @RequestMapping("/addOracle")
+    @ResponseBody
+    public Object addOracle(){
+        int i=1;
+        Goods goods=new Goods();
+        goods.setGoodsName("dadad"+i);
+        goods.setGoodsPrice(new BigDecimal("13213.22"));
+        goods.setGoodsNum(222);
+        goods.setUpdateTime(LocalDateTime.now());
+        goodsDao.insertSelective(goods);
+        return 1;
     }
     @RequestMapping("/add")
     public ModelAndView add(@Valid Goods goods,BindingResult bindingResult){
@@ -301,6 +341,11 @@ public class TestController {
             int count = goodsDao.insertSelective(goods);
         }
         return new ModelAndView(new RedirectView("/goodsList"));
+    }
+    @RequestMapping("/testZset")
+    @ResponseBody
+    public Object testZset(){
+            return null;
     }
     @RequestMapping(value = "/api/testPoi",method = RequestMethod.GET)
     @ResponseBody
@@ -329,9 +374,21 @@ public class TestController {
 
         return null;
     }
+    @RequestMapping("/testJstack")
+    @ResponseBody
+    public Object testJstack(){
+        int i=3444;
+        while(i>1){
+            i=2222;
+        }
+        return "success";
+    }
+
+
     @RequestMapping(value = "/api/testMultipartFile",method = RequestMethod.POST)
     @ResponseBody
     public Object testMultipartFile(MultipartFile file,HttpServletRequest request){
+
         BaseResult baseResult = imageUtils.uploadFileAndCreateThumbnail(file,request);
 //        Map<String, String> stringMap = pictureService.uploadPicture(file);
         return baseResult;

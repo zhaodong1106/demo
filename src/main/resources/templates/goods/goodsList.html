@@ -55,6 +55,7 @@
             <th>商品名</th>
             <th>商品价格</th>
             <th>商品数量</th>
+            <th>修改时间</th>
         </tr>
         </thead>
         <tr id="data" th:each="goods:${goodsList}">
@@ -62,6 +63,7 @@
             <td th:text="${goods.goodsName}">大西瓜</td>
             <td th:text="${goods.goodsPrice}">13.5元</td>
             <td th:text="${goods.goodsNum}">11个</td>
+            <th th:text="${#dates.format(goods.updateTime, 'yyyy-MM-dd HH:mm:ss')}"></th>
         </tr>
     </table>
     <br>

@@ -6,6 +6,11 @@ spring:
     server: true
   application:
     name: demo
+#  datasource:
+#    driver-class-name: oracle.jdbc.OracleDriver
+#    url: jdbc:oracle:thin:@localhost:1521:ORCL
+#    username: test
+#    password: 123456
   datasource:
     url: jdbc:mysql://47.94.105.130:3306/spring-security?useSSL=false&characterEncoding=UTF-8&allowMultiQueries=true
     username: root
@@ -21,6 +26,9 @@ spring:
     cache:
       cachecontrol:
         max-age: 60
+  data:
+    mongodb:
+      uri: mongodb://localhost:27017/test
 #  rabbitmq:
 #    addresses: 47.94.105.130
 #    username: admin
