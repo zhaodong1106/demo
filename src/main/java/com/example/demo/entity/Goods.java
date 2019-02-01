@@ -120,11 +120,13 @@ public class Goods {
     }
 
     public static void main(String[] args){
+        Set<String> set=new HashSet();
         List<String> list0=Arrays.asList("1122","2233","3344");
         List<String> list1=Arrays.asList("2233","3344","4455");
-        List union = ListUtils.union(list0, list1);
+        list0.stream().forEach(xx->set.add(xx));
+        list1.stream().forEach(xx->set.add(xx));
 
-        union.stream().forEach(xx-> System.out.println(xx));
+        set.stream().forEach(xx-> System.out.println(xx));
 
     }
     private static  String substringLast(String str, int subLen){
