@@ -2,6 +2,7 @@ package com.example.demo.entity;
 
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.data.mongodb.core.mapping.Field;
 
 import javax.validation.constraints.Min;
 import java.util.List;
@@ -17,6 +18,16 @@ public class User {
     @Min(value = 0)
     private Integer age;
     private List<String> tags;
+    @Field(value = "goods_ids")
+    private List<String> goodsIds;
+
+    public List<String> getGoodsIds() {
+        return goodsIds;
+    }
+
+    public void setGoodsIds(List<String> goodsIds) {
+        this.goodsIds = goodsIds;
+    }
 
     public List<String> getTags() {
         return tags;

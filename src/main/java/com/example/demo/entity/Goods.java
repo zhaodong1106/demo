@@ -6,6 +6,7 @@ import com.google.common.hash.Funnel;
 import com.google.common.hash.Funnels;
 import io.swagger.models.auth.In;
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.collections.ListUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.format.datetime.DateFormatter;
 
@@ -119,15 +120,11 @@ public class Goods {
     }
 
     public static void main(String[] args){
-        BloomFilter<Integer> bloomFilter=BloomFilter.create(Funnels.integerFunnel(),100000);
-        for(int i=0;i<100;i++) {
-            bloomFilter.put(i);
-        }
-        if(bloomFilter.mightContain(33333)){
-            System.out.println(33333);
-        }
-        String newStr = substring("1", 1, 4);//长度不够前面加0 等于 0ABC 截取 1，4  所得 ABC
-        System.out.println(newStr);
+        List<String> list0=Arrays.asList("1122","2233","3344");
+        List<String> list1=Arrays.asList("2233","3344","4455");
+        List union = ListUtils.union(list0, list1);
+
+        union.stream().forEach(xx-> System.out.println(xx));
 
     }
     private static  String substringLast(String str, int subLen){

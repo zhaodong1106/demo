@@ -29,6 +29,7 @@ import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.collections.ListUtils;
 import org.apache.commons.collections.map.HashedMap;
 import org.apache.poi.hwpf.HWPFDocument;
 import org.apache.poi.xwpf.usermodel.XWPFDocument;
@@ -49,6 +50,7 @@ import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Controller;
+import org.springframework.util.CollectionUtils;
 import org.springframework.util.FileCopyUtils;
 import org.springframework.util.ResourceUtils;
 import org.springframework.validation.BindingResult;
@@ -92,8 +94,14 @@ public class TestController {
     @RequestMapping("/insetMongo")
     @ResponseBody
     public Object insetMongo(){
-        List<User> all = mongoTemplate.findAll(User.class);
-        return all;
+        Map<String,Object> map=new HashMap<>();
+        User user = mongoTemplate.findById("5c53c16b641b51807c4d962d",User.class);
+        Query query1=Query.query(Criteria.where("_id").in(user.getGoodsIds()));
+        List<Goods_Mongo> goods_mongos = mongoTemplate.find(query1, Goods_Mongo.class);
+        map.put("user",user);
+        map.put("goods_mongos",goods_mongos);
+        return  map;
+//        return all;
 //        User user=new User();
 //        user.setId("5c53c16b641b51807c4d962d");
 //        user.setName("xixiixdddsdasd");
