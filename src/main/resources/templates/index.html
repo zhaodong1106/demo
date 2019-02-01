@@ -27,12 +27,23 @@
         });
         $(function() {
             $.ajax({
-                url:"testCommentsNew?informationId=2",
+                url:"/api/selectByStudentId",
                 success:function (data) {
-                    console.log(data["commentNewVoMap"]["8"]);
-                    alert(data["commentNewVoMap"]["8"].userVo["userName"])
+//                    console.log(data["commentNewVoMap"]["8"]);
+//                    alert(data["commentNewVoMap"]["8"].userVo["userName"])
+                    $.get(
+                            "/api/testGoods",function(data){
+
+                            }
+                    );
                 }
-            })
+            });
+
+                $.get(
+                        "/api/selectByStudentId?id=33333",function(data){
+
+                        }
+                );
 
         })
     </script>

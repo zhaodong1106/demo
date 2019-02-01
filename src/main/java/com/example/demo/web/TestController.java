@@ -14,6 +14,7 @@ import com.example.demo.service.CommentNewService;
 import com.example.demo.service.CommentService;
 import com.example.demo.utils.FtpUtil;
 import com.example.demo.utils.ImageUtils;
+import com.example.demo.utils.MongoAutoidUtil;
 import com.example.demo.utils.PictureService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -23,6 +24,7 @@ import com.github.pagehelper.PageInfo;
 import com.google.common.hash.BloomFilter;
 import com.google.common.hash.Funnel;
 import com.google.common.hash.Funnels;
+import com.mongodb.client.result.UpdateResult;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
@@ -38,6 +40,10 @@ import org.springframework.amqp.core.MessagePostProcessor;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
+import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.query.Criteria;
+import org.springframework.data.mongodb.core.query.Query;
+import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
@@ -78,6 +84,24 @@ import static com.example.demo.jedis.ApiResponse.*;
 @Controller
 @Slf4j
 public class TestController {
+    @Autowired
+    private MongoTemplate mongoTemplate;
+    @Autowired
+    private MongoAutoidUtil mongoAutoidUtil;
+
+    @RequestMapping("/insetMongo")
+    @ResponseBody
+    public Object insetMongo(){
+        List<User> all = mongoTemplate.findAll(User.class);
+        return all;
+//        User user=new User();
+//        user.setId("5c53c16b641b51807c4d962d");
+//        user.setName("xixiixdddsdasd");
+//        Query query=Query.query(Criteria.where("id").is(user.getId()));
+//        Update update=Update.update("name","zhaodong");
+//        UpdateResult updateResult = mongoTemplate.updateFirst(query, update, User.class);
+//        return updateResult;
+    }
     @RequestMapping(value = "/api/testGoods",method = RequestMethod.GET)
     @ResponseBody
     @ApiOperation(value = "测试商品")

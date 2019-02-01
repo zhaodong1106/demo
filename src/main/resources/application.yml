@@ -26,9 +26,13 @@ spring:
     cache:
       cachecontrol:
         max-age: 60
-#  data:
-#    mongodb:
-#      uri: mongodb://localhost:27017/test
+  data:
+    mongodb:
+      uri: mongodb://zhaodong:11064957@47.94.105.130:27017/zhaodong?authSource=admin
+#      host: http://47.94.105.130:27017
+#      database: zhaodong
+#      username: zhaodong
+#      password: 11064957
 #  rabbitmq:
 #    addresses: 47.94.105.130
 #    username: admin
@@ -70,8 +74,6 @@ server:
     enabled: true
     mime-types: text/html,text/xml,text/plain,text/css,text/javascript,application/javascript,application/json
     min-response-size: 2048
-  servlet:
-    context-path: /api
 web:
   img-path: C:/images/
 
